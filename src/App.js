@@ -1,17 +1,20 @@
 import React from 'react';
 import SignUp from './SignUp';
-import Activation from './Activation';
-import Login from './Login';
-import ResetPassword from './ResetPassword';
+
 
 function App() {
+  const containerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh', 
+  };
   return (
+    <div style={containerStyle}>
     <div>
-     <SignUp/>
-     <Activation/>
-     <Login/>
-     <ResetPassword/>
+      <SignUp />
     </div>
+  </div>
   );
 }
 
