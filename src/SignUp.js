@@ -1,9 +1,12 @@
 import React from "react";
 import {
   Box,
+  Checkbox,
   FormControl,
   FormHelperText,
+  Grid,
   InputLabel,
+  Link,
   MenuItem,
   Paper,
   Select,
@@ -11,12 +14,23 @@ import {
   Typography,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
+import Button from "@mui/material/Button";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const SignUp = () => {
   const [userRole, setUserRole] = React.useState("");
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChangeFoUserRole = (event: SelectChangeEvent) => {
     setUserRole(event.target.value);
+  };
+
+  const [gender, setGender] = React.useState("");
+
+  const handleChangeForGender = (event: SelectChangeEvent) => {
+    setGender(event.target.value);
   };
 
   return (
@@ -27,8 +41,8 @@ const SignUp = () => {
         alignItems: "center",
         "& > :not(style)": {
           m: 1,
-          width: 400,
-          height: 600,
+          width: 420,
+          height: 900,
           p: 2,
         },
       }}
@@ -38,7 +52,7 @@ const SignUp = () => {
           variant="h4"
           fontWeight="bold"
           align="center"
-          style={{ marginTop: "20px", marginBottom: "40px" }}
+          style={{ marginTop: "20px", marginBottom: "20px" }}
         >
           KAYDOL
         </Typography>
@@ -51,7 +65,7 @@ const SignUp = () => {
             id="demo-simple-select-required"
             value={userRole}
             label="Kullanıcı Rolü *"
-            onChange={handleChange}
+            onChange={handleChangeFoUserRole}
           >
             <MenuItem value="">
               <em>Lütfen kullanıcı rolünüzü seçiniz.</em>
@@ -90,6 +104,61 @@ const SignUp = () => {
           id="demo-helper-text-misaligned"
           label="Cep Telefonu"
         />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer
+            components={["DatePicker"]}
+            sx={{ m: 1, minWidth: 350 }}
+          >
+            <DatePicker label="Doğum Tarihi *" />
+          </DemoContainer>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            style={{ fontSize: "0.8em", marginLeft: "20px", marginTop:"2px" }}
+          >
+            Doğum Tarihi alanı zorunludur.
+          </Typography>
+        </LocalizationProvider>
+        <FormControl required sx={{ m: 1, minWidth: 350 }}>
+          <InputLabel id="demo-simple-select-required-label">
+            Cinsiyet
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-required-label"
+            id="demo-simple-select-required"
+            value={gender}
+            label="Cinsiyet *"
+            onChange={handleChangeForGender}
+          >
+            <MenuItem value="">
+              <em>Lütfen cinsiyetinizi seçiniz.</em>
+            </MenuItem>
+            <MenuItem value={10}>Kadın</MenuItem>
+            <MenuItem value={20}>Erkek</MenuItem>
+          </Select>
+          <FormHelperText>Cinsiyet alanı zorunludur.</FormHelperText>
+        </FormControl>
+        <Checkbox />
+        <span style={{ color: "gray" }}>KVKK Aydınlatma Metni'ni okudum.</span>
+        <Link href="#" underline="hover">
+          Tıklayınız.
+        </Link>
+        <Button
+          variant="contained"
+          sx={{ m: 1, minWidth: 350, textTransform: "none" }}
+        >
+          Giriş Yap
+        </Button>
+        <div
+          style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}
+        >
+          <p style={{ color: "grey", marginRight: "5px", marginTop: "15px" }}>
+            Üyeliğiniz var mı?
+          </p>
+          <Link href="#" underline="hover">
+            Giriş Yap
+          </Link>
+        </div>
         {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
       </Paper>
     </Box>

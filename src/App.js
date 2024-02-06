@@ -12,7 +12,7 @@ function App() {
   return (
     <div style={containerStyle}>
     <div>
-      <SignUp />
+    <SignUp/>
     </div>
   </div>
   );
