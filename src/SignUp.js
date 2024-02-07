@@ -4,7 +4,6 @@ import {
   Checkbox,
   FormControl,
   FormHelperText,
-  Grid,
   InputLabel,
   Link,
   MenuItem,
@@ -42,7 +41,7 @@ const SignUp = () => {
         "& > :not(style)": {
           m: 1,
           width: 420,
-          height: 900,
+          height: 1000,
           p: 2,
         },
       }}
@@ -109,17 +108,18 @@ const SignUp = () => {
             components={["DatePicker"]}
             sx={{ m: 1, minWidth: 350 }}
           >
-            <DatePicker label="Doğum Tarihi *" />
+            <DatePicker label="Doğum Tarihi *" sx={{ width: "95%" }} />
           </DemoContainer>
           <Typography
             variant="body2"
             color="textSecondary"
-            style={{ fontSize: "0.8em", marginLeft: "20px", marginTop:"2px" }}
+            style={{ fontSize: "0.8em", marginLeft: "20px"}}
           >
             Doğum Tarihi alanı zorunludur.
           </Typography>
         </LocalizationProvider>
-        <FormControl required sx={{ m: 1, minWidth: 350 }}>
+
+        <FormControl required sx={{ m: 1, minWidth: 350, marginTop: "25px" }}>
           <InputLabel id="demo-simple-select-required-label">
             Cinsiyet
           </InputLabel>
