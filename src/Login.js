@@ -97,10 +97,16 @@ const Login = () => {
         >
           Giriş Yap
         </Button>
-        <div style={{ display: 'flex', alignItems: 'center' ,marginLeft: '10px'}}>
-      <p style={{ color: 'grey', marginRight: '5px',marginTop: '15px' }}>Üyeliğiniz yok mu?</p>
-      <Link href="#" underline="hover">Kaydol</Link>
-    </div>
+        <div
+          style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}
+        >
+          <p style={{ color: "grey", marginRight: "5px", marginTop: "15px" }}>
+            Üyeliğiniz yok mu?
+          </p>
+          <Link href="#" underline="hover">
+            Kaydol
+          </Link>
+        </div>
       </Paper>
     </Box>
   );

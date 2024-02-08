@@ -1,5 +1,6 @@
 import React from 'react';
-import SignUp from './SignUp';
+import Login from './Login';
+
 
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
   return (
     <div style={containerStyle}>
     <div>
-    <SignUp/>
+   <Login/>
     </div>
   </div>
   );
