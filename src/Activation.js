@@ -20,7 +20,7 @@ const Activation = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
   

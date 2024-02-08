@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import {
   Box,
   Checkbox,
@@ -20,15 +21,28 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const [identityNumber, setIdentityNumber] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseDownPassword = (event) => {
     event.preventDefault();
-  };
+  }
 
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/api/user/login", {
+        identityNumber,
+        password
+      });
+      console.log(response.data); 
+    } catch (error) {
+      console.error("Error occurred:", error); 
+    }
+  };
 
   return (
     <Box
@@ -59,6 +73,8 @@ const Login = () => {
           helperText="TC kimlik numarası alanı zorunludur."
           id="demo-helper-text-misaligned"
           label="TC Kimlik Numarası"
+          value={identityNumber}
+          onChange={(e) => setIdentityNumber(e.target.value)}
         />
         <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
           <InputLabel htmlFor="outlined-adornment-password">Şifre *</InputLabel>
@@ -79,6 +95,8 @@ const Login = () => {
               </InputAdornment>
             }
             label="Şifre"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <FormHelperText>Şifre alanı zorunludur.</FormHelperText>
         </FormControl>
@@ -94,6 +112,7 @@ const Login = () => {
         <Button
           variant="contained"
           sx={{ m: 1, minWidth: 350, textTransform: "none" }}
+          onClick={handleSubmit} 
         >
           Giriş Yap
         </Button>

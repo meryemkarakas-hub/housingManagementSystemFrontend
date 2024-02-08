@@ -12,7 +12,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,15 +21,15 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 const SignUp = () => {
   const [userRole, setUserRole] = React.useState("");
 
-  const handleChangeFoUserRole = (event: SelectChangeEvent) => {
+  const [gender, setGender] = React.useState("");
+
+  const handleChangeFoUserRole = (event) => {
     setUserRole(event.target.value);
   };
 
-  const [gender, setGender] = React.useState("");
-
-  const handleChangeForGender = (event: SelectChangeEvent) => {
+  const handleChangeForGender = (event) => {
     setGender(event.target.value);
-  };
+  };  
 
   return (
     <Box
