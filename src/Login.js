@@ -17,31 +17,97 @@ import {
 import Button from "@mui/material/Button";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = React.useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   const [identityNumber, setIdentityNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [identityError, setIdentityError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
-  }
-
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post("http://localhost:8080/api/user/login", {
-        identityNumber,
-        password
-      });
-      console.log(response.data); 
-    } catch (error) {
-      console.error("Error occurred:", error); 
+  };
+  const validatePassword = (password) => {
+    if (password.length < 8 || password.length > 16) {
+      return false;
     }
+
+    // Şifrenin en az bir büyük harf içermesi
+    if (!/[A-Z]/.test(password)) {
+      return false;
+    }
+
+    // Şifrenin en az bir küçük harf içermesi
+    if (!/[a-z]/.test(password)) {
+      return false;
+    }
+
+    // Şifrenin en az bir rakam içermesi
+    if (!/[0-9]/.test(password)) {
+      return false;
+    }
+
+    // Şifrenin en az bir özel karakter içermesi
+    if (!/[^A-Za-z0-9]/.test(password)) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    // Şifrenin uzunluğunu kontrol et ve 16 karakterden fazlaysa, 16 karaktere sınırlandır.
+    setPassword(newPassword.slice(0, 16));
+    setPasswordError(false); // Her karakter değişiminde hatayı sıfırla
+  };
+
+  const handleIdentityNumberChange = (e) => {
+    const value = e.target.value;
+    if (/^\d{0,11}$/.test(value)) {
+      setIdentityNumber(value);
+      setIdentityError(false); // Her karakter değişiminde hatayı sıfırla
+    }
+  };
+  const handleSubmit = async () => {
+    if (!identityNumber) {
+      setIdentityError(true);
+    } else {
+      setIdentityError(false);
+    }
+
+    if (!password) {
+      setPasswordError(true);
+    }
+
+    if (identityNumber && password) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/user/login",
+          {
+            identityNumber,
+            password,
+          }
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error occurred:", error);
+      }
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handleResetPasswordClick = () => {
+    navigate("/reset-password");
+  };
+
+  const handleSignUpClick = () => {
+    navigate("/sign-up");
   };
 
   return (
@@ -70,14 +136,22 @@ const Login = () => {
         <TextField
           required
           sx={{ m: 1, minWidth: 350 }}
-          helperText="TC kimlik numarası alanı zorunludur."
+          helperText={
+            identityError ? "TC kimlik numarası alanı zorunludur." : ""
+          }
+          error={identityError}
           id="demo-helper-text-misaligned"
           label="TC Kimlik Numarası"
           value={identityNumber}
-          onChange={(e) => setIdentityNumber(e.target.value)}
+          onChange={handleIdentityNumberChange}
         />
         <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Şifre *</InputLabel>
+          <InputLabel
+            htmlFor="outlined-adornment-password"
+            style={{ color: passwordError ? "#dc143c" : "#616161" }}
+          >
+            Şifre *
+          </InputLabel>
           <OutlinedInput
             required
             id="outlined-adornment-password"
@@ -96,23 +170,29 @@ const Login = () => {
             }
             label="Şifre"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
+            error={passwordError}
+            inputProps={{
+              style: { color: "gray" },
+            }}
           />
-          <FormHelperText>Şifre alanı zorunludur.</FormHelperText>
+          <FormHelperText error={passwordError}>
+            {passwordError ? "Şifre alanı zorunludur." : ""}
+          </FormHelperText>
         </FormControl>
-        <Checkbox {...label} />
+        <Checkbox />
         <span
           style={{ color: "gray", marginLeft: "5px", marginRight: "100px" }}
         >
           Beni Hatırla
         </span>
-        <Link href="#" underline="hover">
+        <Link variant="body2" onClick={handleResetPasswordClick}>
           {"Şifremi Unuttum"}
         </Link>
         <Button
           variant="contained"
           sx={{ m: 1, minWidth: 350, textTransform: "none" }}
-          onClick={handleSubmit} 
+          onClick={handleSubmit}
         >
           Giriş Yap
         </Button>
@@ -122,7 +202,7 @@ const Login = () => {
           <p style={{ color: "grey", marginRight: "5px", marginTop: "15px" }}>
             Üyeliğiniz yok mu?
           </p>
-          <Link href="#" underline="hover">
+          <Link variant="body2" onClick={handleSignUpClick}>
             Kaydol
           </Link>
         </div>
