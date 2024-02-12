@@ -18,16 +18,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignUp = () => {
   const [userRole, setUserRole] = React.useState("");
   const [roles, setRoles] = useState([]);
-
-  const [gender, setGender] = React.useState("");
-
-  const handleChangeForGender = (event) => {
-    setGender(event.target.value);
-  };
+  const [genderList, setGenderList] = useState([]);
+  const [gender, setGender] = useState("");
 
   const navigate = useNavigate();
 
@@ -41,14 +38,10 @@ const SignUp = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch(
+      const response = await axios.get(
         "http://localhost:8080/api/reference/user-roles"
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch user roles");
-      }
-      const data = await response.json();
-      setRoles(data);
+      setRoles(response.data);
     } catch (error) {
       console.error("Error fetching user roles:", error);
     }
@@ -56,6 +49,21 @@ const SignUp = () => {
 
   const handleChangeFoUserRole = (event) => {
     setUserRole(event.target.value);
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/reference/gender")
+      .then((response) => {
+        setGenderList(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching gender data:", error);
+      });
+  }, []);
+
+  const handleChangeForGender = (event) => {
+    setGender(event.target.value);
   };
 
   return (
@@ -161,8 +169,11 @@ const SignUp = () => {
             <MenuItem value="">
               <em>Lütfen cinsiyetinizi seçiniz.</em>
             </MenuItem>
-            <MenuItem value={10}>Kadın</MenuItem>
-            <MenuItem value={20}>Erkek</MenuItem>
+            {genderList.map((genderItem) => (
+              <MenuItem key={genderItem.id} value={genderItem.id}>
+                {genderItem.gender}
+              </MenuItem>
+            ))}
           </Select>
           <FormHelperText>Cinsiyet alanı zorunludur.</FormHelperText>
         </FormControl>
