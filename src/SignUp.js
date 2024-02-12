@@ -135,6 +135,13 @@ const SignUp = () => {
         <TextField
           required
           sx={{ m: 1, minWidth: 350 }}
+          helperText="E-posta alanı zorunludur."
+          id="demo-helper-text-misaligned"
+          label="E-posta"
+        />
+        <TextField
+          required
+          sx={{ m: 1, minWidth: 350 }}
           helperText="Cep Telefonu alanı zorunludur."
           id="demo-helper-text-misaligned"
           label="Cep Telefonu"
