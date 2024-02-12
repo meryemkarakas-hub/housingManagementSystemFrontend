@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Checkbox,
@@ -19,15 +19,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
 
-
 const SignUp = () => {
   const [userRole, setUserRole] = React.useState("");
+  const [roles, setRoles] = useState([]);
 
   const [gender, setGender] = React.useState("");
-
-  const handleChangeFoUserRole = (event) => {
-    setUserRole(event.target.value);
-  };
 
   const handleChangeForGender = (event) => {
     setGender(event.target.value);
@@ -37,6 +33,29 @@ const SignUp = () => {
 
   const handleLoginClick = () => {
     navigate("/login");
+  };
+
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/reference/user-roles"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch user roles");
+      }
+      const data = await response.json();
+      setRoles(data);
+    } catch (error) {
+      console.error("Error fetching user roles:", error);
+    }
+  };
+
+  const handleChangeFoUserRole = (event) => {
+    setUserRole(event.target.value);
   };
 
   return (
@@ -76,9 +95,11 @@ const SignUp = () => {
             <MenuItem value="">
               <em>Lütfen kullanıcı rolünüzü seçiniz.</em>
             </MenuItem>
-            <MenuItem value={10}>Sistem Yöneticisi</MenuItem>
-            <MenuItem value={20}>Konut Yöneticisi</MenuItem>
-            <MenuItem value={30}>Konut Sakini</MenuItem>
+            {roles.map((role) => (
+              <MenuItem key={role.id} value={role.id}>
+                {role.userRoles}
+              </MenuItem>
+            ))}
           </Select>
           <FormHelperText>Kullanıcı rolü alanı zorunludur.</FormHelperText>
         </FormControl>
@@ -120,7 +141,7 @@ const SignUp = () => {
           <Typography
             variant="body2"
             color="textSecondary"
-            style={{ fontSize: "0.8em", marginLeft: "20px"}}
+            style={{ fontSize: "0.8em", marginLeft: "20px" }}
           >
             Doğum Tarihi alanı zorunludur.
           </Typography>
