@@ -15,21 +15,32 @@ const ResetPassword = () => {
   const [emailError, setEmailError] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
 
+  const validateTCNumber = (tcNumber) => {
+    const tcRegex = /^[1-9]{1}[0-9]{9}[02468]{1}$/;
+    return tcRegex.test(tcNumber);
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleResetPassword = () => {
     setShowErrors(true);
 
-    if (!identityNumber) {
+    if (!validateTCNumber(identityNumber)) {
       setIdentityError(true);
     } else {
       setIdentityError(false);
     }
-    if (!emailAddress) {
+
+    if (!validateEmail(emailAddress)) {
       setEmailError(true);
     } else {
       setEmailError(false);
     }
 
-    if (identityNumber && emailAddress) {
+    if (validateTCNumber(identityNumber) && validateEmail(emailAddress)) {
       axios.post("http://localhost:8080/api/user/reset-password", {
         identityNumber: identityNumber,
         emailAddress: emailAddress
@@ -75,9 +86,13 @@ const ResetPassword = () => {
           value={identityNumber}
           error={identityError}
           onChange={(e) => {
-            setIdentityNumber(e.target.value);
-            setIdentityError(false);
+            const input = e.target.value;
+            if (/^\d*$/.test(input)) {
+              setIdentityNumber(input.slice(0, 11));
+              setIdentityError(false);
+            }
           }}
+          inputProps={{ maxLength: 11 }}
         />
         <TextField
           required
@@ -88,8 +103,11 @@ const ResetPassword = () => {
           value={emailAddress}
           error={emailError}
           onChange={(e) => {
-            setEmailAddress(e.target.value);
-            setEmailError(false);
+            const input = e.target.value;
+            if (input.length <= 40) {
+              setEmailAddress(input);
+              setEmailError(false);
+            }
           }}
         />
         <Button variant="contained" sx={{ m: 1, minWidth: 350, textTransform: 'none'}} onClick={handleResetPassword}>Şifre Yenile</Button>

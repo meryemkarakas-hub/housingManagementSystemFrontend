@@ -15,7 +15,7 @@ function App() {
     <div style={containerStyle}>
       <Router>
         <Routes>
-          <Route exact path="/" element={<Login />} />
+          <Route exact path="/login" element={<Login />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>

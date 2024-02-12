@@ -17,6 +17,8 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useNavigate } from "react-router-dom";
+
 
 const SignUp = () => {
   const [userRole, setUserRole] = React.useState("");
@@ -29,7 +31,13 @@ const SignUp = () => {
 
   const handleChangeForGender = (event) => {
     setGender(event.target.value);
-  };  
+  };
+
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
 
   return (
     <Box
@@ -146,7 +154,7 @@ const SignUp = () => {
           variant="contained"
           sx={{ m: 1, minWidth: 350, textTransform: "none" }}
         >
-          Giriş Yap
+          Kaydol
         </Button>
         <div
           style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}
@@ -154,7 +162,7 @@ const SignUp = () => {
           <p style={{ color: "grey", marginRight: "5px", marginTop: "15px" }}>
             Üyeliğiniz var mı?
           </p>
-          <Link href="#" underline="hover">
+          <Link variant="body2" onClick={handleLoginClick}>
             Giriş Yap
           </Link>
         </div>
