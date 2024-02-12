@@ -36,22 +36,18 @@ const Login = () => {
       return false;
     }
 
-    // Şifrenin en az bir büyük harf içermesi
     if (!/[A-Z]/.test(password)) {
       return false;
     }
 
-    // Şifrenin en az bir küçük harf içermesi
     if (!/[a-z]/.test(password)) {
       return false;
     }
 
-    // Şifrenin en az bir rakam içermesi
     if (!/[0-9]/.test(password)) {
       return false;
     }
 
-    // Şifrenin en az bir özel karakter içermesi
     if (!/[^A-Za-z0-9]/.test(password)) {
       return false;
     }
@@ -61,16 +57,15 @@ const Login = () => {
 
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
-    // Şifrenin uzunluğunu kontrol et ve 16 karakterden fazlaysa, 16 karaktere sınırlandır.
     setPassword(newPassword.slice(0, 16));
-    setPasswordError(false); // Her karakter değişiminde hatayı sıfırla
+    setPasswordError(false); 
   };
 
   const handleIdentityNumberChange = (e) => {
     const value = e.target.value;
     if (/^\d{0,11}$/.test(value)) {
       setIdentityNumber(value);
-      setIdentityError(false); // Her karakter değişiminde hatayı sıfırla
+      setIdentityError(false); 
     }
   };
   const handleSubmit = async () => {
