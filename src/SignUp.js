@@ -25,6 +25,7 @@ const SignUp = () => {
   const [roles, setRoles] = useState([]);
   const [genderList, setGenderList] = useState([]);
   const [gender, setGender] = useState("");
+  const [identityNumber, setIdentityNumber] = useState("");
 
   const navigate = useNavigate();
 
@@ -66,6 +67,12 @@ const SignUp = () => {
     setGender(event.target.value);
   };
 
+  const handleIdentityNumberChange = (event) => {
+    let inputIdentityNumber = event.target.value.replace(/\D/g, "");
+    inputIdentityNumber = inputIdentityNumber.slice(0, 11);
+    setIdentityNumber(inputIdentityNumber);
+  };
+
   return (
     <Box
       sx={{
@@ -75,7 +82,7 @@ const SignUp = () => {
         "& > :not(style)": {
           m: 1,
           width: 420,
-          height: 1000,
+          height: 1100,
           p: 2,
         },
       }}
@@ -117,6 +124,13 @@ const SignUp = () => {
           helperText="TC kimlik numarası alanı zorunludur."
           id="demo-helper-text-misaligned"
           label="TC Kimlik Numarası"
+          value={identityNumber}
+          onChange={handleIdentityNumberChange}
+          inputProps={{
+            inputMode: "numeric",
+            pattern: "[0-9]*",
+            maxLength: 11,
+          }}
         />
         <TextField
           required
@@ -137,7 +151,12 @@ const SignUp = () => {
           sx={{ m: 1, minWidth: 350 }}
           helperText="E-posta alanı zorunludur."
           id="demo-helper-text-misaligned"
-          label="E-posta"
+          label="E-posta Adresi"
+          type="email"
+          inputProps={{
+            maxLength: 50,
+            pattern: ".{1,50}", 
+          }}
         />
         <TextField
           required
