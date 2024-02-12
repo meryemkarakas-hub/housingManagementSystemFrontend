@@ -29,6 +29,9 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
+  const [kvkk, setKvkk] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
 
   const handleNameChange = (event) => {
     const inputValue = event.target.value;
@@ -102,6 +105,30 @@ const SignUp = () => {
       "$1 $2 $3 $4 $5"
     ); // Numarayı istediğimiz formata dönüştür: 5XX XXX XX XX
     setMobileNumber(formattedNumber);
+  };
+
+  const handleSignUp = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/user/sign-up",
+        {
+          identityNumber,
+          name,
+          surname,
+          emailAddress,
+          mobileNumber,
+          dateOfBirth,
+          gender,
+          kvkk,
+          userRole,
+        }
+      );
+      console.log("SignUp Successful:", response.data);
+      // Burada başarılı bir şekilde kaydolunduğuna dair bir mesaj gösterebilir ya da başka bir işlem yapabilirsiniz.
+    } catch (error) {
+      console.error("Error signing up:", error);
+      // Hata durumunda bir hata mesajı gösterebilir veya uygun bir şekilde işlem yapabilirsiniz.
+    }
   };
 
   return (
@@ -208,7 +235,7 @@ const SignUp = () => {
           value={mobileNumber}
           onChange={handleMobileNumberChange}
           inputProps={{
-            maxLength: 14, 
+            maxLength: 14,
           }}
         />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -257,6 +284,7 @@ const SignUp = () => {
         <Button
           variant="contained"
           sx={{ m: 1, minWidth: 350, textTransform: "none" }}
+          onClick={handleSignUp}
         >
           Kaydol
         </Button>
