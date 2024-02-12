@@ -26,6 +26,27 @@ const SignUp = () => {
   const [genderList, setGenderList] = useState([]);
   const [gender, setGender] = useState("");
   const [identityNumber, setIdentityNumber] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+
+  const handleNameChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
+
+    if (onlyLetters.test(inputValue)) {
+      setName(inputValue);
+    }
+  };
+
+  const handleSurnameChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
+
+    if (onlyLetters.test(inputValue)) {
+      setSurname(inputValue);
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -71,6 +92,16 @@ const SignUp = () => {
     let inputIdentityNumber = event.target.value.replace(/\D/g, "");
     inputIdentityNumber = inputIdentityNumber.slice(0, 11);
     setIdentityNumber(inputIdentityNumber);
+  };
+
+  const handleMobileNumberChange = (event) => {
+    let inputMobileNumber = event.target.value.replace(/\D/g, "");
+    inputMobileNumber = inputMobileNumber.slice(0, 10);
+    const formattedNumber = inputMobileNumber.replace(
+      /(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/,
+      "$1 $2 $3 $4 $5"
+    ); // Numarayı istediğimiz formata dönüştür: 5XX XXX XX XX
+    setMobileNumber(formattedNumber);
   };
 
   return (
@@ -138,6 +169,11 @@ const SignUp = () => {
           helperText="Ad alanı zorunludur."
           id="demo-helper-text-misaligned"
           label="Ad"
+          value={name}
+          onChange={handleNameChange}
+          inputProps={{
+            maxLength: 20,
+          }}
         />
         <TextField
           required
@@ -145,6 +181,11 @@ const SignUp = () => {
           helperText="Soyad alanı zorunludur."
           id="demo-helper-text-misaligned"
           label="Soyad"
+          value={surname}
+          onChange={handleSurnameChange}
+          inputProps={{
+            maxLength: 20,
+          }}
         />
         <TextField
           required
@@ -155,7 +196,7 @@ const SignUp = () => {
           type="email"
           inputProps={{
             maxLength: 50,
-            pattern: ".{1,50}", 
+            pattern: ".{1,50}",
           }}
         />
         <TextField
@@ -164,6 +205,11 @@ const SignUp = () => {
           helperText="Cep Telefonu alanı zorunludur."
           id="demo-helper-text-misaligned"
           label="Cep Telefonu"
+          value={mobileNumber}
+          onChange={handleMobileNumberChange}
+          inputProps={{
+            maxLength: 14, 
+          }}
         />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer
