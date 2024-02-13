@@ -32,6 +32,7 @@ const SignUp = () => {
   const [kvkk, setKvkk] = useState(false);
   const [dateOfBirth, setDateOfBirth] = useState(null);
   const [emailAddress, setEmailAddress] = useState("");
+  const [formErrors, setFormErrors] = useState({});
 
   const handleNameChange = (event) => {
     const inputValue = event.target.value;
@@ -106,26 +107,60 @@ const SignUp = () => {
     );
     setMobileNumber(formattedNumber);
   };
+  const validateForm = () => {
+    const errors = {};
+    if (!identityNumber) {
+      errors.identityNumber = "TC kimlik numarası alanı zorunludur.";
+    }
+    if (!name) {
+      errors.name = "Ad alanı zorunludur.";
+    }
+    if (!surname) {
+      errors.surname = "Soyad alanı zorunludur.";
+    }
+    if (!emailAddress) {
+      errors.emailAddress = "E-posta Adresi alanı zorunludur.";
+    }
+    if (!mobileNumber) {
+      errors.mobileNumber = "Telefon numarası alanı zorunludur.";
+    }
+    if (!dateOfBirth) {
+      errors.dateOfBirth = "Doğum Tarihi alanı zorunludur.";
+    }
+    if (!gender) {
+      errors.gender = "Cinsiyet alanı zorunludur.";
+    }
+    if (!kvkk) {
+      errors.kvkk = "KVKK Aydınlatma Metni alanı zorunludur.";
+    }
+    if (!userRole) {
+      errors.userRole = "Kullanıcı Rolü alanı zorunludur.";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSignUp = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/user/sign-up",
-        {
-          identityNumber,
-          name,
-          surname,
-          emailAddress,
-          mobileNumber,
-          dateOfBirth,
-          gender,
-          kvkk,
-          userRole,
-        }
-      );
-      console.log("SignUp Successful:", response.data);
-    } catch (error) {
-      console.error("Error signing up:", error);
+    if (validateForm()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/user/sign-up",
+          {
+            identityNumber,
+            name,
+            surname,
+            emailAddress,
+            mobileNumber,
+            dateOfBirth,
+            gender,
+            kvkk,
+            userRole,
+          }
+        );
+        console.log("SignUp Successful:", response.data);
+      } catch (error) {
+        console.error("Error signing up:", error);
+      }
     }
   };
 
@@ -153,7 +188,10 @@ const SignUp = () => {
           KAYDOL
         </Typography>
         <FormControl required sx={{ m: 1, minWidth: 350 }}>
-          <InputLabel id="demo-simple-select-required-label">
+          <InputLabel
+            id="demo-simple-select-required-label"
+            style={{ color: formErrors.userRole ? "#dc143c" : "" }}
+          >
             Kullanıcı Rolü
           </InputLabel>
           <Select
@@ -162,9 +200,17 @@ const SignUp = () => {
             value={userRole}
             label="Kullanıcı Rolü *"
             onChange={handleChangeFoUserRole}
+            error={Boolean(formErrors.userRole)}
+            helperText={formErrors.userRole ? formErrors.userRole : " "}
           >
             <MenuItem value="">
-              <em>Lütfen kullanıcı rolünüzü seçiniz.</em>
+              {Boolean(formErrors.userRole) ? (
+                <em style={{ color: "#dc143c" }}>
+                  Lütfen kullanıcı rolünüzü seçiniz.
+                </em>
+              ) : (
+                <em>Lütfen kullanıcı rolünüzü seçiniz.</em>
+              )}
             </MenuItem>
             {roles.map((role) => (
               <MenuItem key={role.id} value={role.id}>
@@ -172,12 +218,18 @@ const SignUp = () => {
               </MenuItem>
             ))}
           </Select>
-          <FormHelperText>Kullanıcı rolü alanı zorunludur.</FormHelperText>
+          <FormHelperText
+            style={{ color: formErrors.userRole ? "#dc143c" : "transparent" }} 
+          >
+            Kullanıcı rolü alanı zorunludur.
+          </FormHelperText>
         </FormControl>
+
         <TextField
           required
           sx={{ m: 1, minWidth: 350 }}
-          helperText="TC kimlik numarası alanı zorunludur."
+          error={Boolean(formErrors.identityNumber)}
+          helperText={formErrors.identityNumber || " "}
           id="demo-helper-text-misaligned"
           label="TC Kimlik Numarası"
           value={identityNumber}
@@ -191,7 +243,8 @@ const SignUp = () => {
         <TextField
           required
           sx={{ m: 1, minWidth: 350 }}
-          helperText="Ad alanı zorunludur."
+          error={Boolean(formErrors.name)}
+          helperText={formErrors.name || " "}
           id="demo-helper-text-misaligned"
           label="Ad"
           value={name}
@@ -203,7 +256,8 @@ const SignUp = () => {
         <TextField
           required
           sx={{ m: 1, minWidth: 350 }}
-          helperText="Soyad alanı zorunludur."
+          error={Boolean(formErrors.surname)}
+          helperText={formErrors.surname || " "}
           id="demo-helper-text-misaligned"
           label="Soyad"
           value={surname}
@@ -215,7 +269,8 @@ const SignUp = () => {
         <TextField
           required
           sx={{ m: 1, minWidth: 350 }}
-          helperText="E-posta alanı zorunludur."
+          error={Boolean(formErrors.emailAddress)}
+          helperText={formErrors.emailAddress || " "}
           id="demo-helper-text-misaligned"
           label="E-posta Adresi"
           type="email"
@@ -229,7 +284,8 @@ const SignUp = () => {
         <TextField
           required
           sx={{ m: 1, minWidth: 350 }}
-          helperText="Cep Telefonu alanı zorunludur."
+          error={Boolean(formErrors.mobileNumber)}
+          helperText={formErrors.mobileNumber || " "}
           id="demo-helper-text-misaligned"
           label="Cep Telefonu"
           value={mobileNumber}
@@ -260,15 +316,20 @@ const SignUp = () => {
           </Typography>
         </LocalizationProvider>
         <FormControl required sx={{ m: 1, minWidth: 350, marginTop: "25px" }}>
-          <InputLabel id="demo-simple-select-required-label">
+          <InputLabel
+            id="demo-simple-select-required-label"
+            style={{ color: formErrors.gender ? "#dc143c" : "" }}
+          >
             Cinsiyet
           </InputLabel>
           <Select
             labelId="demo-simple-select-required-label"
             id="demo-simple-select-required"
             value={gender}
-            label="Cinsiyet *"
+            label="Cinsiyet"
             onChange={handleChangeForGender}
+            error={Boolean(formErrors.gender)}
+            helperText={formErrors.gender || " "}
           >
             <MenuItem value="">
               <em>Lütfen cinsiyetinizi seçiniz.</em>
@@ -279,7 +340,11 @@ const SignUp = () => {
               </MenuItem>
             ))}
           </Select>
-          <FormHelperText>Cinsiyet alanı zorunludur.</FormHelperText>
+          <FormHelperText
+            style={{ color: formErrors.gender ? "#dc143c" : "transparent" }}
+          >
+            Cinsiyet alanı zorunludur.
+          </FormHelperText>
         </FormControl>
         <Checkbox checked={kvkk} onChange={(e) => setKvkk(e.target.checked)} />
         <span style={{ color: "gray" }}>KVKK Aydınlatma Metni'ni okudum.</span>
