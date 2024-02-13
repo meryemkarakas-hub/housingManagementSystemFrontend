@@ -29,8 +29,8 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
-  const [kvkk, setKvkk] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [kvkk, setKvkk] = useState(false);
+  const [dateOfBirth, setDateOfBirth] = useState(null);
   const [emailAddress, setEmailAddress] = useState("");
 
   const handleNameChange = (event) => {
@@ -103,7 +103,7 @@ const SignUp = () => {
     const formattedNumber = inputMobileNumber.replace(
       /(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/,
       "$1 $2 $3 $4 $5"
-    ); // Numarayı istediğimiz formata dönüştür: 5XX XXX XX XX
+    );
     setMobileNumber(formattedNumber);
   };
 
@@ -124,10 +124,8 @@ const SignUp = () => {
         }
       );
       console.log("SignUp Successful:", response.data);
-      // Burada başarılı bir şekilde kaydolunduğuna dair bir mesaj gösterebilir ya da başka bir işlem yapabilirsiniz.
     } catch (error) {
       console.error("Error signing up:", error);
-      // Hata durumunda bir hata mesajı gösterebilir veya uygun bir şekilde işlem yapabilirsiniz.
     }
   };
 
@@ -221,6 +219,8 @@ const SignUp = () => {
           id="demo-helper-text-misaligned"
           label="E-posta Adresi"
           type="email"
+          value={emailAddress}
+          onChange={(e) => setEmailAddress(e.target.value)}
           inputProps={{
             maxLength: 50,
             pattern: ".{1,50}",
@@ -243,7 +243,13 @@ const SignUp = () => {
             components={["DatePicker"]}
             sx={{ m: 1, minWidth: 350 }}
           >
-            <DatePicker label="Doğum Tarihi *" sx={{ width: "95%" }} />
+            <DatePicker
+              label="Doğum Tarihi *"
+              sx={{ width: "95%" }}
+              value={dateOfBirth}
+              onChange={(newDate) => setDateOfBirth(newDate)}
+              renderInput={(params) => <TextField {...params} />}
+            />
           </DemoContainer>
           <Typography
             variant="body2"
@@ -253,7 +259,6 @@ const SignUp = () => {
             Doğum Tarihi alanı zorunludur.
           </Typography>
         </LocalizationProvider>
-
         <FormControl required sx={{ m: 1, minWidth: 350, marginTop: "25px" }}>
           <InputLabel id="demo-simple-select-required-label">
             Cinsiyet
@@ -276,7 +281,7 @@ const SignUp = () => {
           </Select>
           <FormHelperText>Cinsiyet alanı zorunludur.</FormHelperText>
         </FormControl>
-        <Checkbox />
+        <Checkbox checked={kvkk} onChange={(e) => setKvkk(e.target.checked)} />
         <span style={{ color: "gray" }}>KVKK Aydınlatma Metni'ni okudum.</span>
         <Link href="#" underline="hover">
           Tıklayınız.
