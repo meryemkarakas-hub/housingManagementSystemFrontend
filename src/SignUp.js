@@ -219,7 +219,7 @@ const SignUp = () => {
             ))}
           </Select>
           <FormHelperText
-            style={{ color: formErrors.userRole ? "#dc143c" : "transparent" }} 
+            style={{ color: formErrors.userRole ? "#dc143c" : "transparent" }}
           >
             Kullanıcı rolü alanı zorunludur.
           </FormHelperText>
@@ -300,21 +300,39 @@ const SignUp = () => {
             sx={{ m: 1, minWidth: 350 }}
           >
             <DatePicker
-              label="Doğum Tarihi *"
+              label={
+                <span style={{ color: formErrors.dateOfBirth ? "#dc143c" : "" }}>
+                  Doğum Tarihi *
+                </span>
+              }
               sx={{ width: "95%" }}
               value={dateOfBirth}
               onChange={(newDate) => setDateOfBirth(newDate)}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={Boolean(formErrors.dateOfBirth)}
+                  helperText={
+                    formErrors.dateOfBirth
+                      ? "Doğum Tarihi alanı zorunludur."
+                      : " "
+                  }
+                />
+              )}
             />
           </DemoContainer>
           <Typography
             variant="body2"
-            color="textSecondary"
-            style={{ fontSize: "0.8em", marginLeft: "20px" }}
+            color={formErrors.dateOfBirth ? "#dc143c" : "textSecondary"}
+            style={{
+              fontSize: "0.8em",
+              marginLeft: "20px",
+            }}
           >
-            Doğum Tarihi alanı zorunludur.
+            {formErrors.dateOfBirth ? "Doğum Tarihi alanı zorunludur." : " "}
           </Typography>
         </LocalizationProvider>
+
         <FormControl required sx={{ m: 1, minWidth: 350, marginTop: "25px" }}>
           <InputLabel
             id="demo-simple-select-required-label"
