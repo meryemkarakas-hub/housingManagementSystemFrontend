@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import {
+  Alert,
   Box,
   Checkbox,
   FormControl,
@@ -11,6 +12,7 @@ import {
   Link,
   OutlinedInput,
   Paper,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -68,17 +70,37 @@ const Login = () => {
       setIdentityError(false); 
     }
   };
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message, status) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status === 0 ? "error" : "success");
+    setSnackbarOpen(true);
+  };
+
   const handleSubmit = async () => {
     if (!identityNumber) {
       setIdentityError(true);
+      showSnackbar("TC kimlik numarası alanı boş bırakılamaz.", 0);
     } else {
       setIdentityError(false);
     }
-
+  
     if (!password) {
       setPasswordError(true);
+      showSnackbar("Şifre alanı boş bırakılamaz.", 0);
+    } else {
+      setPasswordError(false);
     }
-
+  
     if (identityNumber && password) {
       try {
         const response = await axios.post(
@@ -88,12 +110,23 @@ const Login = () => {
             password,
           }
         );
-        console.log(response.data);
+        
+        const { message, status } = response.data;
+        
+        if (status === "success") {
+          console.log(message);
+          showSnackbar(message, 1); 
+        } else {
+          console.error(message);
+          showSnackbar(message, 0); 
+        }
       } catch (error) {
         console.error("Error occurred:", error);
+        showSnackbar("Giriş yapılırken bir hata oluştu.", 0);
       }
     }
   };
+  
 
   const navigate = useNavigate();
 
@@ -105,7 +138,20 @@ const Login = () => {
     navigate("/sign-up");
   };
 
+
+
   return (
+  <>
+   <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     <Box
       sx={{
         display: "flex",
@@ -203,6 +249,7 @@ const Login = () => {
         </div>
       </Paper>
     </Box>
+    </>
   );
 };
 
