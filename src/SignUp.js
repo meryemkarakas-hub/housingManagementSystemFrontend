@@ -364,11 +364,18 @@ const SignUp = () => {
             Cinsiyet alanı zorunludur.
           </FormHelperText>
         </FormControl>
+        <div>
         <Checkbox checked={kvkk} onChange={(e) => setKvkk(e.target.checked)} />
         <span style={{ color: "gray" }}>KVKK Aydınlatma Metni'ni okudum.</span>
         <Link href="#" underline="hover">
           Tıklayınız.
         </Link>
+        </div>
+        <FormHelperText
+            style={{ color: formErrors.kvkk ? "#dc143c" : "transparent",marginLeft: '25px' }}
+          >
+            KVKK Aydınlatma Metni alanı zorunludur.
+          </FormHelperText>
         <Button
           variant="contained"
           sx={{ m: 1, minWidth: 350, textTransform: "none" }}
