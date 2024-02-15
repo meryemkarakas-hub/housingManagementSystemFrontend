@@ -107,41 +107,43 @@ const SignUp = () => {
     );
     setMobileNumber(formattedNumber);
   };
-  const validateForm = () => {
+  const validateUserInfo = () => {
     const errors = {};
-    if (!identityNumber) {
-      errors.identityNumber = "TC kimlik numarası alanı zorunludur.";
-    }
-    if (!name) {
-      errors.name = "Ad alanı zorunludur.";
-    }
-    if (!surname) {
-      errors.surname = "Soyad alanı zorunludur.";
-    }
-    if (!emailAddress) {
-      errors.emailAddress = "E-posta Adresi alanı zorunludur.";
-    }
-    if (!mobileNumber) {
-      errors.mobileNumber = "Telefon numarası alanı zorunludur.";
-    }
-    if (!dateOfBirth) {
-      errors.dateOfBirth = "Doğum Tarihi alanı zorunludur.";
-    }
-    if (!gender) {
-      errors.gender = "Cinsiyet alanı zorunludur.";
-    }
-    if (!kvkk) {
-      errors.kvkk = "KVKK Aydınlatma Metni alanı zorunludur.";
-    }
-    if (!userRole) {
-      errors.userRole = "Kullanıcı Rolü alanı zorunludur.";
-    }
+
+    const requiredFields = {
+      identityNumber: "TC kimlik numarası",
+      name: "Ad",
+      surname: "Soyad",
+      emailAddress: "E-posta Adresi",
+      mobileNumber: "Telefon numarası",
+      dateOfBirth: "Doğum Tarihi",
+      gender: "Cinsiyet",
+      kvkk: "KVKK Aydınlatma Metni",
+      userRole: "Kullanıcı Rolü",
+    };
+
+    const checkField = (field, fieldName) => {
+      if (!field) {
+        errors[fieldName] = `${requiredFields[fieldName]} alanı zorunludur.`;
+      }
+    };
+
+    checkField(identityNumber, "identityNumber");
+    checkField(name, "name");
+    checkField(surname, "surname");
+    checkField(emailAddress, "emailAddress");
+    checkField(mobileNumber, "mobileNumber");
+    checkField(dateOfBirth, "dateOfBirth");
+    checkField(gender, "gender");
+    checkField(kvkk, "kvkk");
+    checkField(userRole, "userRole");
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSignUp = async () => {
-    if (validateForm()) {
+    if (validateUserInfo()) {
       try {
         const response = await axios.post(
           "http://localhost:8080/api/user/sign-up",
@@ -301,7 +303,9 @@ const SignUp = () => {
           >
             <DatePicker
               label={
-                <span style={{ color: formErrors.dateOfBirth ? "#dc143c" : "" }}>
+                <span
+                  style={{ color: formErrors.dateOfBirth ? "#dc143c" : "" }}
+                >
                   Doğum Tarihi *
                 </span>
               }
@@ -365,17 +369,25 @@ const SignUp = () => {
           </FormHelperText>
         </FormControl>
         <div>
-        <Checkbox checked={kvkk} onChange={(e) => setKvkk(e.target.checked)} />
-        <span style={{ color: "gray" }}>KVKK Aydınlatma Metni'ni okudum.</span>
-        <Link href="#" underline="hover">
-          Tıklayınız.
-        </Link>
+          <Checkbox
+            checked={kvkk}
+            onChange={(e) => setKvkk(e.target.checked)}
+          />
+          <span style={{ color: "gray" }}>
+            KVKK Aydınlatma Metni'ni okudum.
+          </span>
+          <Link href="#" underline="hover">
+            Tıklayınız.
+          </Link>
         </div>
         <FormHelperText
-            style={{ color: formErrors.kvkk ? "#dc143c" : "transparent",marginLeft: '25px' }}
-          >
-            KVKK Aydınlatma Metni alanı zorunludur.
-          </FormHelperText>
+          style={{
+            color: formErrors.kvkk ? "#dc143c" : "transparent",
+            marginLeft: "25px",
+          }}
+        >
+          KVKK Aydınlatma Metni alanı zorunludur.
+        </FormHelperText>
         <Button
           variant="contained"
           sx={{ m: 1, minWidth: 350, textTransform: "none" }}
