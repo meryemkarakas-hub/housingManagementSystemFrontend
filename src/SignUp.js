@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  Alert,
   Box,
   Checkbox,
   FormControl,
@@ -9,6 +10,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -33,6 +35,20 @@ const SignUp = () => {
   const [dateOfBirth, setDateOfBirth] = useState(null);
   const [emailAddress, setEmailAddress] = useState("");
   const [formErrors, setFormErrors] = useState({});
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message, status) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status === 0 ? "error" : "success");
+    setSnackbarOpen(true);
+  };
 
   const handleNameChange = (event) => {
     const inputValue = event.target.value;
@@ -65,7 +81,7 @@ const SignUp = () => {
   const fetchRoles = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/reference/user-roles"
+        "http://localhost:8080/api/auth/reference/user-roles"
       );
       setRoles(response.data);
     } catch (error) {
@@ -79,7 +95,7 @@ const SignUp = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/reference/gender")
+      .get("http://localhost:8080/api/auth/reference/gender")
       .then((response) => {
         setGenderList(response.data);
       })
@@ -146,7 +162,7 @@ const SignUp = () => {
     if (validateUserInfo()) {
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/user/sign-up",
+          "http://localhost:8080/api/auth/sign-up",
           {
             identityNumber,
             name,
@@ -159,14 +175,35 @@ const SignUp = () => {
             userRole,
           }
         );
-        console.log("SignUp Successful:", response.data);
-      } catch (error) {
-        console.error("Error signing up:", error);
+        const { message, status } = response.data;
+
+      if (status === 1) {
+        console.log(message);
+        showSnackbar(message, 1);
+      } else {
+        console.error(message);
+        showSnackbar(message, 0);
       }
+    } catch (error) {
+      console.error("Error occurred:", error);
+      showSnackbar("Kaydolunurken bir hata oluştu.", 0);
     }
+  }
   };
 
+
   return (
+    <>
+    <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     <Box
       sx={{
         display: "flex",
@@ -408,6 +445,7 @@ const SignUp = () => {
         {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
       </Paper>
     </Box>
+    </>
   );
 };
 

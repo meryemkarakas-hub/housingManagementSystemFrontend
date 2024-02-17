@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios"; 
 import {
+  Alert,
   Box,
   Paper,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -14,6 +16,20 @@ const ResetPassword = () => {
   const [identityError, setIdentityError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message, status) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status === 0 ? "error" : "success");
+    setSnackbarOpen(true);
+  };
 
   const validateTCNumber = (tcNumber) => {
     const tcRegex = /^[1-9]{1}[0-9]{9}[02468]{1}$/;
@@ -41,11 +57,20 @@ const ResetPassword = () => {
     }
 
     if (validateTCNumber(identityNumber) && validateEmail(emailAddress)) {
-      axios.post("http://localhost:8080/api/user/reset-password", {
+      axios.post("http://localhost:8080/api/auth/reset-password", {
         identityNumber: identityNumber,
         emailAddress: emailAddress
       })
+      
       .then(response => {
+        const { message, status } = response.data;
+      if (status === 1) {
+        console.log(message);
+        showSnackbar(message, 1);
+      } else {
+        console.error(message);
+        showSnackbar(message, 0);
+      }
         console.log(response.data); 
       })
       .catch(error => {
@@ -55,6 +80,17 @@ const ResetPassword = () => {
   };
 
   return (
+    <>
+     <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     <Box
       sx={{
         display: "flex",
@@ -114,6 +150,7 @@ const ResetPassword = () => {
         {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
       </Paper>
     </Box>
+    </>
   );
 };
 
