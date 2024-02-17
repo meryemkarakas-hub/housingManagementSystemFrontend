@@ -20,6 +20,12 @@ import axios from "axios";
 
 
 const Activation = () => {
+  const [formData, setFormData] = useState({
+    identityNumber: "",
+    password: "",
+    rePassword: "",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   const [showRepassword, setShowRepassword] = useState(false);
   const [identityNumber, setIdentityNumber] = useState("");
@@ -77,7 +83,8 @@ const Activation = () => {
     setSnackbarOpen(true);
   };
 
-  const handleSubmit = async () => {
+  
+  const handleSubmit = (event) => {
     if (!identityNumber && !password && !repassword) {
       setIdentityError(true);
       setPasswordError(true);
@@ -97,35 +104,36 @@ const Activation = () => {
       showSnackbar("TC kimlik numaranız 11 haneden oluşmalıdır.", 0);
       return;
     }
-
     setIdentityError(false);
     setPasswordError(false);
     setRepasswordError(false);
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/activation",
-        {
-          identityNumber,
-          password,
-          repassword
+    event.preventDefault();
+    const apiUrl = "http://localhost:8080/api/auth/activation";
+    axios
+      .post(apiUrl, formData)
+      .then((response) => {
+        console.log("Response from the server:", response.data);
+        const { message, status } = response.data;
+        if (status === 1) {
+          console.log(message);
+          showSnackbar(message, 1);
+        } else {
+          console.error(message);
+          showSnackbar(message, 0);
         }
-      );
-
-      const { message, status } = response.data;
-
-      if (status === 1) {
-        console.log(message);
-        showSnackbar(message, 1);
-      } else {
-        console.error(message);
-        showSnackbar(message, 0);
-      }
-    } catch (error) {
-      console.error("Error occurred:", error);
-      showSnackbar("Aktivasyon işlemi yapılırken bir hata oluştu.", 0);
-    }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        showSnackbar("Aktivasyon işlemi yapılırken bir hata oluştu.", 0);
+      });
   };
+  useEffect(() => {
+    const activationCode = window.location.pathname.split("/").pop();
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      activationCode,
+    }));
+  }, []);
   return (
     <>
       <Snackbar
