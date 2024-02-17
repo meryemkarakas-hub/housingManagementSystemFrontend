@@ -28,9 +28,6 @@ const Activation = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showRepassword, setShowRepassword] = useState(false);
-  const [identityNumber, setIdentityNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [repassword, setRepassword] = useState("");
   const [identityError, setIdentityError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [repasswordError, setRepasswordError] = useState(false);
@@ -48,27 +45,34 @@ const Activation = () => {
   const handleMouseDownRepassword = (event) => {
     event.preventDefault();
   };
-
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
-    setPassword(newPassword.slice(0, 16));
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      password: newPassword.slice(0, 16),
+    }));
     setPasswordError(false);
   };
 
   const handleRepasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setRepassword(newPassword.slice(0, 16));
+    const newRepassword = e.target.value;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      rePassword: newRepassword.slice(0, 16),
+    }));
     setRepasswordError(false);
   };
 
   const handleIdentityNumberChange = (e) => {
     const value = e.target.value;
     if (/^\d{0,11}$/.test(value)) {
-      setIdentityNumber(value);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        identityNumber: value,
+      }));
       setIdentityError(false);
     }
   };
-
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
@@ -85,7 +89,8 @@ const Activation = () => {
 
   
   const handleSubmit = (event) => {
-    if (!identityNumber && !password && !repassword) {
+    const { identityNumber, password, rePassword } = formData;
+    if (!identityNumber && !password && !rePassword) {
       setIdentityError(true);
       setPasswordError(true);
       setRepasswordError(true);
@@ -96,7 +101,7 @@ const Activation = () => {
     } else if (!password) {
       setPasswordError(true);
       return;
-    } else if (!repassword) {
+    } else if (!rePassword) {
       setRepasswordError(true);
       return;
     } else if (identityNumber.length !== 11) {
@@ -177,7 +182,7 @@ const Activation = () => {
             error={identityError}
             id="demo-helper-text-misaligned"
             label="TC Kimlik Numarası"
-            value={identityNumber}
+            value={formData.identityNumber}
             onChange={handleIdentityNumberChange}
             autoComplete="off"
           />
@@ -205,7 +210,7 @@ const Activation = () => {
                 </InputAdornment>
               }
               label="Şifre"
-              value={password}
+              value={formData.password}
               onChange={handlePasswordChange}
               error={passwordError}
               inputProps={{
@@ -241,7 +246,7 @@ const Activation = () => {
                 </InputAdornment>
               }
               label="Şifre Tekrar"
-              value={repassword}
+              value={formData.repassword}
               onChange={handleRepasswordChange}
               error={repasswordError}
               inputProps={{
