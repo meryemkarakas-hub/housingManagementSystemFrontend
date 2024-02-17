@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   FormControl,
   FormHelperText,
@@ -8,23 +9,135 @@ import {
   InputLabel,
   OutlinedInput,
   Paper,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
 import Button from '@mui/material/Button';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import axios from "axios";
+
 
 const Activation = () => {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepassword, setShowRepassword] = useState(false);
+  const [identityNumber, setIdentityNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [repassword, setRepassword] = useState("");
+  const [identityError, setIdentityError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [repasswordError, setRepasswordError] = useState(false);
+
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleClickShowRepassword = () => setShowRepassword((show) => !show);
+
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  
+
+  const handleMouseDownRepassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword.slice(0, 16));
+    setPasswordError(false);
+  };
+
+  const handleRepasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setRepassword(newPassword.slice(0, 16));
+    setRepasswordError(false);
+  };
+
+  const handleIdentityNumberChange = (e) => {
+    const value = e.target.value;
+    if (/^\d{0,11}$/.test(value)) {
+      setIdentityNumber(value);
+      setIdentityError(false);
+    }
+  };
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message, status) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status === 0 ? "error" : "success");
+    setSnackbarOpen(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!identityNumber && !password && !repassword) {
+      setIdentityError(true);
+      setPasswordError(true);
+      setRepasswordError(true);
+      return;
+    } else if (!identityNumber) {
+      setIdentityError(true);
+      return;
+    } else if (!password) {
+      setPasswordError(true);
+      return;
+    } else if (!repassword) {
+      setRepasswordError(true);
+      return;
+    } else if (identityNumber.length !== 11) {
+      setIdentityError(true);
+      showSnackbar("TC kimlik numaranız 11 haneden oluşmalıdır.", 0);
+      return;
+    }
+
+    setIdentityError(false);
+    setPasswordError(false);
+    setRepasswordError(false);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/activation",
+        {
+          identityNumber,
+          password,
+          repassword
+        }
+      );
+
+      const { message, status } = response.data;
+
+      if (status === 1) {
+        console.log(message);
+        showSnackbar(message, 1);
+      } else {
+        console.error(message);
+        showSnackbar(message, 0);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error);
+      showSnackbar("Aktivasyon işlemi yapılırken bir hata oluştu.", 0);
+    }
+  };
   return (
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     <Box
       sx={{
         display: "flex",
@@ -48,60 +161,99 @@ const Activation = () => {
           Aktivasyon İşlemi
         </Typography>
         <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          helperText="TC kimlik numarası alanı zorunludur."
-          id="demo-helper-text-misaligned"
-          label="TC Kimlik Numarası"
-        />
-        <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Şifre *</InputLabel>
-          <OutlinedInput
             required
-            id="outlined-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
+            sx={{ m: 1, minWidth: 350 }}
+            helperText={
+              identityError ? "TC kimlik numarası alanı zorunludur." : ""
             }
-            label="Şifre"
+            error={identityError}
+            id="demo-helper-text-misaligned"
+            label="TC Kimlik Numarası"
+            value={identityNumber}
+            onChange={handleIdentityNumberChange}
+            autoComplete="off"
           />
-          <FormHelperText>Şifre alanı zorunludur.</FormHelperText>
-        </FormControl>
-        <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password" >Şifre Tekrar *</InputLabel>
-          <OutlinedInput
-            required
-            id="outlined-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Şifre Tekrar"
-          />
-          <FormHelperText>Şifre Tekrar alanı zorunludur.</FormHelperText>
-        </FormControl>
-      <Button variant="contained" sx={{ m: 1, minWidth: 350, textTransform: 'none'}}>Aktivasyon İşlemini Gerçekleştir</Button>
+          <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
+            <InputLabel
+              htmlFor="outlined-adornment-password"
+              style={{ color: passwordError ? "#dc143c" : "#616161" }}
+            >
+              Şifre *
+            </InputLabel>
+            <OutlinedInput
+              required
+              id="outlined-adornment-password"
+              type={showPassword ? "text" : "password"}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Şifre"
+              value={password}
+              onChange={handlePasswordChange}
+              error={passwordError}
+              inputProps={{
+                style: { color: "gray" },
+              }}
+              autoComplete="off"
+            />
+            <FormHelperText error={repasswordError}>
+              {repasswordError ? "Şifre alanı zorunludur." : ""}
+            </FormHelperText>
+          </FormControl>
+          <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
+            <InputLabel
+              htmlFor="outlined-adornment-password"
+              style={{ color: repasswordError ? "#dc143c" : "#616161" }}
+            >
+              Şifre Tekrar *
+            </InputLabel>
+            <OutlinedInput
+              required
+              id="outlined-adornment-password"
+              type={showRepassword ? "text" : "password"}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowRepassword}
+                    onMouseDown={handleMouseDownRepassword}
+                    edge="end"
+                  >
+                    {showRepassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Şifre Tekrar"
+              value={repassword}
+              onChange={handleRepasswordChange}
+              error={repasswordError}
+              inputProps={{
+                style: { color: "gray" },
+              }}
+              autoComplete="off"
+            />
+            <FormHelperText error={repasswordError}>
+              {repasswordError ? "Şifre Tekrar alanı zorunludur." : ""}
+            </FormHelperText>
+          </FormControl>
+        <Button
+            variant="contained"
+            sx={{ m: 1, minWidth: 350, textTransform: "none" }}
+            onClick={handleSubmit}
+          >Aktivasyon İşlemini Gerçekleştir</Button>
         {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
       </Paper>
     </Box>
+    </>
   );
 };
 
