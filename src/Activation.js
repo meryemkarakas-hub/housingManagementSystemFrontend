@@ -13,11 +13,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Button from '@mui/material/Button';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Button from "@mui/material/Button";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
-
 
 const Activation = () => {
   const [formData, setFormData] = useState({
@@ -32,11 +31,9 @@ const Activation = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [repasswordError, setRepasswordError] = useState(false);
 
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleClickShowRepassword = () => setShowRepassword((show) => !show);
-
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -87,7 +84,6 @@ const Activation = () => {
     setSnackbarOpen(true);
   };
 
-  
   const handleSubmit = (event) => {
     const { identityNumber, password, rePassword } = formData;
     if (!identityNumber && !password && !rePassword) {
@@ -151,29 +147,29 @@ const Activation = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        "& > :not(style)": {
-          m: 1,
-          width: 400,
-          height: 550,
-          p: 2,
-        },
-      }}
-    >
-      <Paper elevation={3}>
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          align="center"
-          style={{ marginTop: "40px", marginBottom: "40px" }}
-        >
-          Aktivasyon İşlemi
-        </Typography>
-        <TextField
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          "& > :not(style)": {
+            m: 1,
+            width: 400,
+            height: 550,
+            p: 2,
+          },
+        }}
+      >
+        <Paper elevation={3}>
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            align="center"
+            style={{ marginTop: "40px", marginBottom: "40px" }}
+          >
+            Aktivasyon İşlemi
+          </Typography>
+          <TextField
             required
             sx={{ m: 1, minWidth: 350 }}
             helperText={
@@ -215,6 +211,7 @@ const Activation = () => {
               error={passwordError}
               inputProps={{
                 style: { color: "gray" },
+                maxLength: 16,
               }}
               autoComplete="off"
             />
@@ -223,52 +220,54 @@ const Activation = () => {
             </FormHelperText>
           </FormControl>
           <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
-  <InputLabel
-    htmlFor="outlined-adornment-repassword"
-    style={{ color: repasswordError ? "#dc143c" : "#616161" }}
-  >
-    Şifre Tekrar *
-  </InputLabel>
-  <OutlinedInput
-    required
-    id="outlined-adornment-repassword"
-    type={showRepassword ? "text" : "password"} // type="password" olarak değiştirildi
-    endAdornment={
-      <InputAdornment position="end">
-        <IconButton
-          aria-label="toggle password visibility"
-          onClick={handleClickShowRepassword}
-          onMouseDown={handleMouseDownRepassword}
-          edge="end"
-        >
-          {showRepassword ? <VisibilityOff /> : <Visibility />}
-        </IconButton>
-      </InputAdornment>
-    }
-    label="Şifre Tekrar"
-    value={formData.repassword}
-    onChange={handleRepasswordChange}
-    error={repasswordError}
-    inputProps={{
-      style: { color: "gray" },
-    }}
-    autoComplete="off"
-  />
-  <FormHelperText error={repasswordError}>
-    {repasswordError ? "Şifre tekrar alanı zorunludur." : ""}
-  </FormHelperText>
-</FormControl>
+            <InputLabel
+              htmlFor="outlined-adornment-repassword"
+              style={{ color: repasswordError ? "#dc143c" : "#616161" }}
+            >
+              Şifre Tekrar *
+            </InputLabel>
+            <OutlinedInput
+              required
+              id="outlined-adornment-repassword"
+              type={showRepassword ? "text" : "password"} // type="password" olarak değiştirildi
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowRepassword}
+                    onMouseDown={handleMouseDownRepassword}
+                    edge="end"
+                  >
+                    {showRepassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Şifre Tekrar"
+              value={formData.repassword}
+              onChange={handleRepasswordChange}
+              error={repasswordError}
+              inputProps={{
+                style: { color: "gray" },
+                maxLength: 16,
+              }}
+              autoComplete="off"
+            />
+            <FormHelperText error={repasswordError}>
+              {repasswordError ? "Şifre tekrar alanı zorunludur." : ""}
+            </FormHelperText>
+          </FormControl>
 
-        <Button
+          <Button
             variant="contained"
             sx={{ m: 1, minWidth: 350, textTransform: "none" }}
             onClick={handleSubmit}
-          >Aktivasyon İşlemini Gerçekleştir</Button>
-        {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
-      </Paper>
-    </Box>
+          >
+            Aktivasyon İşlemini Gerçekleştir
+          </Button>
+          {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
+        </Paper>
+      </Box>
     </>
   );
 };
 export default Activation;
-
