@@ -17,6 +17,7 @@ import Button from "@mui/material/Button";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 const Activation = () => {
   const [formData, setFormData] = useState({
@@ -84,6 +85,9 @@ const Activation = () => {
     setSnackbarOpen(true);
   };
 
+  const navigate = useNavigate();
+
+
   const handleSubmit = (event) => {
     const { identityNumber, password, rePassword } = formData;
     if (!identityNumber && !password && !rePassword) {
@@ -118,6 +122,9 @@ const Activation = () => {
         if (status === 1) {
           console.log(message);
           showSnackbar(message, 1);
+          setTimeout(() => {
+            navigate("/login");
+          }, 6000);
         } else {
           console.error(message);
           showSnackbar(message, 0);

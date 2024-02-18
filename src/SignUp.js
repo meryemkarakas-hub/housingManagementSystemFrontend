@@ -176,10 +176,12 @@ const SignUp = () => {
           }
         );
         const { message, status } = response.data;
-
       if (status === 1) {
         console.log(message);
         showSnackbar(message, 1);
+        setTimeout(() => {
+          navigate("/login");
+        }, 6000);
       } else {
         console.error(message);
         showSnackbar(message, 0);
