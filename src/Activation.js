@@ -223,41 +223,42 @@ const Activation = () => {
             </FormHelperText>
           </FormControl>
           <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
-            <InputLabel
-              htmlFor="outlined-adornment-password"
-              style={{ color: repasswordError ? "#dc143c" : "#616161" }}
-            >
-              Şifre Tekrar *
-            </InputLabel>
-            <OutlinedInput
-              required
-              id="outlined-adornment-password"
-              type={showRepassword ? "text" : "repassword"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowRepassword}
-                    onMouseDown={handleMouseDownRepassword}
-                    edge="end"
-                  >
-                    {showRepassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Şifre Tekrar"
-              value={formData.repassword}
-              onChange={handleRepasswordChange}
-              error={repasswordError}
-              inputProps={{
-                style: { color: "gray" },
-              }}
-              autoComplete="off"
-            />
-            <FormHelperText error={repasswordError}>
-              {repasswordError ? "Şifre tekrar alanı zorunludur." : ""}
-            </FormHelperText>
-          </FormControl>
+  <InputLabel
+    htmlFor="outlined-adornment-repassword"
+    style={{ color: repasswordError ? "#dc143c" : "#616161" }}
+  >
+    Şifre Tekrar *
+  </InputLabel>
+  <OutlinedInput
+    required
+    id="outlined-adornment-repassword"
+    type={showRepassword ? "text" : "password"} // type="password" olarak değiştirildi
+    endAdornment={
+      <InputAdornment position="end">
+        <IconButton
+          aria-label="toggle password visibility"
+          onClick={handleClickShowRepassword}
+          onMouseDown={handleMouseDownRepassword}
+          edge="end"
+        >
+          {showRepassword ? <VisibilityOff /> : <Visibility />}
+        </IconButton>
+      </InputAdornment>
+    }
+    label="Şifre Tekrar"
+    value={formData.repassword}
+    onChange={handleRepasswordChange}
+    error={repasswordError}
+    inputProps={{
+      style: { color: "gray" },
+    }}
+    autoComplete="off"
+  />
+  <FormHelperText error={repasswordError}>
+    {repasswordError ? "Şifre tekrar alanı zorunludur." : ""}
+  </FormHelperText>
+</FormControl>
+
         <Button
             variant="contained"
             sx={{ m: 1, minWidth: 350, textTransform: "none" }}
