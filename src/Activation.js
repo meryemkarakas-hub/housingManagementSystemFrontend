@@ -218,8 +218,8 @@ const Activation = () => {
               }}
               autoComplete="off"
             />
-            <FormHelperText error={repasswordError}>
-              {repasswordError ? "Şifre alanı zorunludur." : ""}
+            <FormHelperText error={passwordError}>
+              {passwordError ? "Şifre alanı zorunludur." : ""}
             </FormHelperText>
           </FormControl>
           <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
@@ -232,7 +232,7 @@ const Activation = () => {
             <OutlinedInput
               required
               id="outlined-adornment-password"
-              type={showRepassword ? "text" : "password"}
+              type={showRepassword ? "text" : "repassword"}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -255,7 +255,7 @@ const Activation = () => {
               autoComplete="off"
             />
             <FormHelperText error={repasswordError}>
-              {repasswordError ? "Şifre Tekrar alanı zorunludur." : ""}
+              {repasswordError ? "Şifre tekrar alanı zorunludur." : ""}
             </FormHelperText>
           </FormControl>
         <Button
@@ -269,6 +269,5 @@ const Activation = () => {
     </>
   );
 };
-
 export default Activation;
 
