@@ -1,9 +1,9 @@
 import React from "react";
-import ResetPassword from "./ResetPassword";
-import SignUp from "./SignUp";
+import ResetPassword from "./components/ResetPassword";
+import SignUp from "./components/SignUp";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./Login";
-import Activation from "./Activation";
+import Login from "./components/Login";
+import Activation from "./components/Activation";
 
 function App() {
   const containerStyle = {
