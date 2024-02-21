@@ -35,6 +35,10 @@ const SignUp = () => {
   const [dateOfBirth, setDateOfBirth] = useState(null);
   const [emailAddress, setEmailAddress] = useState("");
   const [formErrors, setFormErrors] = useState({});
+  const [showErrors, setShowErrors] = useState(false);
+  const [identityError, setIdentityError] = useState(false);
+
+
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -158,7 +162,18 @@ const SignUp = () => {
     return Object.keys(errors).length === 0;
   };
 
+  const validateTCNumber = (tcNumber) => {
+    const tcRegex = /^[1-9]{1}[0-9]{9}[02468]{1}$/;
+    return tcRegex.test(tcNumber);
+  };
+
   const handleSignUp = async () => {
+    setShowErrors(true);
+    if (!validateTCNumber(identityNumber)) {
+      setIdentityError(true);
+    } else {
+      setIdentityError(false);
+    }
     if (validateUserInfo()) {
       try {
         const response = await axios.post(
@@ -265,7 +280,23 @@ const SignUp = () => {
             Kullanıcı rolü alanı zorunludur.
           </FormHelperText>
         </FormControl>
-
+        <TextField
+          required
+          sx={{ m: 1, minWidth: 350 }}
+          helperText={showErrors && !identityNumber ? "TC kimlik numarası alanı zorunludur." : ""}
+          id="identityNumber"
+          label="TC Kimlik Numarası"
+          value={identityNumber}
+          error={identityError}
+          onChange={(e) => {
+            const input = e.target.value;
+            if (/^\d*$/.test(input)) {
+              setIdentityNumber(input.slice(0, 11));
+              setIdentityError(false);
+            }
+          }}
+          inputProps={{ maxLength: 11 }}
+        />
         <TextField
           required
           sx={{ m: 1, minWidth: 350 }}
