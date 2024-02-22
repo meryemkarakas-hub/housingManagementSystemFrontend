@@ -38,8 +38,6 @@ const SignUp = () => {
   const [showErrors, setShowErrors] = useState(false);
   const [identityError, setIdentityError] = useState(false);
 
-
-
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
@@ -54,24 +52,104 @@ const SignUp = () => {
     setSnackbarOpen(true);
   };
 
+  const handleIdentityNumberChange = (event) => {
+    let inputValue = event.target.value.trim();
+    const onlyDigits = /^\d*$/;
+    if (onlyDigits.test(inputValue)) {
+      if (inputValue.length === 11) {
+        setIdentityNumber(inputValue);
+        setFormErrors({ ...formErrors, identityNumber: "" });
+      } else {
+        setIdentityNumber(inputValue);
+        setFormErrors({
+          ...formErrors,
+          identityNumber: "TC Kimlik Numarası 11 haneli olmalıdır.",
+        });
+      }
+    } else {
+      setFormErrors({
+        ...formErrors,
+        identityNumber: "TC Kimlik Numarası alanı sadece rakam içermelidir.",
+      });
+    }
+  };
+
   const handleNameChange = (event) => {
     const inputValue = event.target.value;
     const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
-
-    if (onlyLetters.test(inputValue)) {
+    if (onlyLetters.test(inputValue) || inputValue === "") {
       setName(inputValue);
+      setFormErrors({ ...formErrors, name: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        name: "Ad alanı sadece harflerden oluşmalıdır.",
+      });
+    }
+    if (inputValue === "") {
+      setFormErrors({ ...formErrors, name: "Ad alanı zorunludur." });
     }
   };
 
   const handleSurnameChange = (event) => {
     const inputValue = event.target.value;
     const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
-
-    if (onlyLetters.test(inputValue)) {
+    if (onlyLetters.test(inputValue) || inputValue === "") {
       setSurname(inputValue);
+      setFormErrors({ ...formErrors, surname: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        surname: "Soyad alanı sadece harflerden oluşmalıdır.",
+      });
+    }
+    if (inputValue === "") {
+      setFormErrors({ ...formErrors, surname: "Soyad alanı zorunludur." });
     }
   };
 
+  const handleEmailChange = (event) => {
+    const inputValue = event.target.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (inputValue === "" || emailRegex.test(inputValue)) {
+      setEmailAddress(inputValue);
+      setFormErrors({ ...formErrors, emailAddress: "" });
+    } else {
+      setEmailAddress(inputValue);
+      setFormErrors({
+        ...formErrors,
+        emailAddress: "Geçerli bir e-posta adresi giriniz.",
+      });
+    }
+  };
+
+  const handleMobileNumberChange = (event) => {
+    let inputValue = event.target.value.trim();
+    const onlyDigits = /^\d*$/;
+    if (onlyDigits.test(inputValue)) {
+      if (inputValue.length === 10) {
+        const formattedNumber = inputValue.replace(
+          /(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/,
+          "0($2)-$3-$4-$5"
+        );
+        setMobileNumber(formattedNumber);
+        setFormErrors({ ...formErrors, mobileNumber: "" });
+      } else {
+        setMobileNumber(inputValue);
+        setFormErrors({
+          ...formErrors,
+          mobileNumber:
+            "Cep telefonu numarası 10 haneli ve 5XXXXXXXXX formatında olmalıdır.",
+        });
+      }
+    } else {
+      setFormErrors({
+        ...formErrors,
+        mobileNumber:
+          "Cep Telefonu Numarası alanı sadece rakamlardan oluşmalıdır.",
+      });
+    }
+  };
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -112,21 +190,6 @@ const SignUp = () => {
     setGender(event.target.value);
   };
 
-  const handleIdentityNumberChange = (event) => {
-    let inputIdentityNumber = event.target.value.replace(/\D/g, "");
-    inputIdentityNumber = inputIdentityNumber.slice(0, 11);
-    setIdentityNumber(inputIdentityNumber);
-  };
-
-  const handleMobileNumberChange = (event) => {
-    let inputMobileNumber = event.target.value.replace(/\D/g, "");
-    inputMobileNumber = inputMobileNumber.slice(0, 10);
-    const formattedNumber = inputMobileNumber.replace(
-      /(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/,
-      "$1 $2 $3 $4 $5"
-    );
-    setMobileNumber(formattedNumber);
-  };
   const validateUserInfo = () => {
     const errors = {};
 
@@ -191,27 +254,26 @@ const SignUp = () => {
           }
         );
         const { message, status } = response.data;
-      if (status === 1) {
-        console.log(message);
-        showSnackbar(message, 1);
-        setTimeout(() => {
-          navigate("/login");
-        }, 6000);
-      } else {
-        console.error(message);
-        showSnackbar(message, 0);
+        if (status === 1) {
+          console.log(message);
+          showSnackbar(message, 1);
+          setTimeout(() => {
+            navigate("/login");
+          }, 6000);
+        } else {
+          console.error(message);
+          showSnackbar(message, 0);
+        }
+      } catch (error) {
+        console.error("Error occurred:", error);
+        showSnackbar("Kaydolunurken bir hata oluştu.", 0);
       }
-    } catch (error) {
-      console.error("Error occurred:", error);
-      showSnackbar("Kaydolunurken bir hata oluştu.", 0);
     }
-  }
   };
-
 
   return (
     <>
-    <Snackbar
+      <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarOpen}
         autoHideDuration={6000}
@@ -221,263 +283,276 @@ const SignUp = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        "& > :not(style)": {
-          m: 1,
-          width: 420,
-          height: 1100,
-          p: 2,
-        },
-      }}
-    >
-      <Paper elevation={3}>
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          align="center"
-          style={{ marginTop: "20px", marginBottom: "20px" }}
-        >
-          KAYDOL
-        </Typography>
-        <FormControl required sx={{ m: 1, minWidth: 350 }}>
-          <InputLabel
-            id="demo-simple-select-required-label"
-            style={{ color: formErrors.userRole ? "#dc143c" : "" }}
-          >
-            Kullanıcı Rolü
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-required-label"
-            id="demo-simple-select-required"
-            value={userRole}
-            label="Kullanıcı Rolü *"
-            onChange={handleChangeFoUserRole}
-            error={Boolean(formErrors.userRole)}
-            helperText={formErrors.userRole ? formErrors.userRole : " "}
-          >
-            <MenuItem value="">
-              {Boolean(formErrors.userRole) ? (
-                <em style={{ color: "#dc143c" }}>
-                  Lütfen kullanıcı rolünüzü seçiniz.
-                </em>
-              ) : (
-                <em>Lütfen kullanıcı rolünüzü seçiniz.</em>
-              )}
-            </MenuItem>
-            {roles.map((role) => (
-              <MenuItem key={role.id} value={role.id}>
-                {role.userRoles}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText
-            style={{ color: formErrors.userRole ? "#dc143c" : "transparent" }}
-          >
-            Kullanıcı rolü alanı zorunludur.
-          </FormHelperText>
-        </FormControl>
-        <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          helperText={showErrors && !identityNumber ? "TC kimlik numarası alanı zorunludur." : ""}
-          id="identityNumber"
-          label="TC Kimlik Numarası"
-          value={identityNumber}
-          error={identityError}
-          onChange={(e) => {
-            const input = e.target.value;
-            if (/^\d*$/.test(input)) {
-              setIdentityNumber(input.slice(0, 11));
-              setIdentityError(false);
-            }
-          }}
-          inputProps={{ maxLength: 11 }}
-        />
-        <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          error={Boolean(formErrors.identityNumber)}
-          helperText={formErrors.identityNumber || " "}
-          id="demo-helper-text-misaligned"
-          label="TC Kimlik Numarası"
-          value={identityNumber}
-          onChange={handleIdentityNumberChange}
-          inputProps={{
-            inputMode: "numeric",
-            pattern: "[0-9]*",
-            maxLength: 11,
-          }}
-        />
-        <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          error={Boolean(formErrors.name)}
-          helperText={formErrors.name || " "}
-          id="demo-helper-text-misaligned"
-          label="Ad"
-          value={name}
-          onChange={handleNameChange}
-          inputProps={{
-            maxLength: 20,
-          }}
-        />
-        <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          error={Boolean(formErrors.surname)}
-          helperText={formErrors.surname || " "}
-          id="demo-helper-text-misaligned"
-          label="Soyad"
-          value={surname}
-          onChange={handleSurnameChange}
-          inputProps={{
-            maxLength: 20,
-          }}
-        />
-        <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          error={Boolean(formErrors.emailAddress)}
-          helperText={formErrors.emailAddress || " "}
-          id="demo-helper-text-misaligned"
-          label="E-posta Adresi"
-          type="email"
-          value={emailAddress}
-          onChange={(e) => setEmailAddress(e.target.value)}
-          inputProps={{
-            maxLength: 50,
-            pattern: ".{1,50}",
-          }}
-        />
-        <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          error={Boolean(formErrors.mobileNumber)}
-          helperText={formErrors.mobileNumber || " "}
-          id="demo-helper-text-misaligned"
-          label="Cep Telefonu"
-          value={mobileNumber}
-          onChange={handleMobileNumberChange}
-          inputProps={{
-            maxLength: 14,
-          }}
-        />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer
-            components={["DatePicker"]}
-            sx={{ m: 1, minWidth: 350 }}
-          >
-            <DatePicker
-              label={
-                <span
-                  style={{ color: formErrors.dateOfBirth ? "#dc143c" : "" }}
-                >
-                  Doğum Tarihi *
-                </span>
-              }
-              sx={{ width: "95%" }}
-              value={dateOfBirth}
-              onChange={(newDate) => setDateOfBirth(newDate)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  error={Boolean(formErrors.dateOfBirth)}
-                  helperText={
-                    formErrors.dateOfBirth
-                      ? "Doğum Tarihi alanı zorunludur."
-                      : " "
-                  }
-                />
-              )}
-            />
-          </DemoContainer>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          "& > :not(style)": {
+            m: 1,
+            width: 420,
+            height: 1100,
+            p: 2,
+          },
+        }}
+      >
+        <Paper elevation={3}>
           <Typography
-            variant="body2"
-            color={formErrors.dateOfBirth ? "#dc143c" : "textSecondary"}
+            variant="h4"
+            fontWeight="bold"
+            align="center"
+            style={{ marginTop: "20px", marginBottom: "20px" }}
+          >
+            KAYDOL
+          </Typography>
+          <FormControl required sx={{ m: 1, minWidth: 350 }}>
+            <InputLabel
+              id="demo-simple-select-required-label"
+              style={{ color: formErrors.userRole ? "#dc143c" : "" }}
+            >
+              Kullanıcı Rolü
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-required-label"
+              id="demo-simple-select-required"
+              value={userRole}
+              label="Kullanıcı Rolü *"
+              onChange={handleChangeFoUserRole}
+              error={Boolean(formErrors.userRole)}
+              helperText={formErrors.userRole ? formErrors.userRole : " "}
+              onFocus={() => setFormErrors({ ...formErrors, userRole: "" })}
+              onBlur={() => {
+                if (!userRole) {
+                  setFormErrors({
+                    ...formErrors,
+                    userRole: "Kullanıcı rolü alanı zorunludur.",
+                  });
+                }
+              }}
+            >
+              <MenuItem value="">
+                {Boolean(formErrors.userRole) ? (
+                  <em style={{ color: "#dc143c" }}>
+                    Lütfen kullanıcı rolünüzü seçiniz.
+                  </em>
+                ) : (
+                  <em>Lütfen kullanıcı rolünüzü seçiniz.</em>
+                )}
+              </MenuItem>
+              {roles.map((role) => (
+                <MenuItem key={role.id} value={role.id}>
+                  {role.userRoles}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText
+              style={{ color: formErrors.userRole ? "#dc143c" : "transparent" }}
+            >
+              Kullanıcı rolü alanı zorunludur.
+            </FormHelperText>
+          </FormControl>
+
+          <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.identityNumber)}
+            helperText={formErrors.identityNumber || " "}
+            id="demo-helper-text-misaligned"
+            label="TC Kimlik Numarası"
+            value={identityNumber}
+            onChange={handleIdentityNumberChange}
+            inputProps={{
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+              maxLength: 11,
+            }}
+          />
+          <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.name)}
+            helperText={formErrors.name || " "}
+            id="demo-helper-text-misaligned"
+            label="Ad"
+            value={name}
+            onChange={handleNameChange}
+            inputProps={{
+              maxLength: 20,
+            }}
+          />
+          <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.surname)}
+            helperText={formErrors.surname || " "}
+            id="demo-helper-text-misaligned"
+            label="Soyad"
+            value={surname}
+            onChange={handleSurnameChange}
+            inputProps={{
+              maxLength: 20,
+            }}
+          />
+          <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.emailAddress)}
+            helperText={formErrors.emailAddress || " "}
+            id="demo-helper-text-misaligned"
+            label="E-posta Adresi"
+            value={emailAddress}
+            onChange={handleEmailChange}
+            inputProps={{
+              maxLength: 50,
+            }}
+          />
+          <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.mobileNumber)}
+            helperText={formErrors.mobileNumber || " "}
+            id="demo-helper-text-misaligned"
+            label="Cep Telefonu"
+            value={mobileNumber}
+            onChange={handleMobileNumberChange}
+            inputProps={{
+              maxLength: 10,
+            }}
+          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer
+              components={["DatePicker"]}
+              sx={{ m: 1, minWidth: 350 }}
+            >
+              <DatePicker
+                label={
+                  <span
+                    style={{ color: formErrors.dateOfBirth ? "#dc143c" : "" }}
+                  >
+                    Doğum Tarihi *
+                  </span>
+                }
+                sx={{ width: "95%" }}
+                value={dateOfBirth}
+                onChange={(newDate) => setDateOfBirth(newDate)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    error={Boolean(formErrors.dateOfBirth)}
+                    helperText={
+                      formErrors.dateOfBirth
+                        ? "Doğum Tarihi alanı zorunludur."
+                        : " "
+                    }
+                  />
+                )}
+              />
+            </DemoContainer>
+            <Typography
+              variant="body2"
+              color={formErrors.dateOfBirth ? "#dc143c" : "textSecondary"}
+              style={{
+                fontSize: "0.8em",
+                marginLeft: "20px",
+              }}
+            >
+              {formErrors.dateOfBirth ? "Doğum Tarihi alanı zorunludur." : " "}
+            </Typography>
+          </LocalizationProvider>
+
+          <FormControl required sx={{ m: 1, minWidth: 350, marginTop: "25px" }}>
+            <InputLabel
+              id="demo-simple-select-required-label"
+              style={{ color: formErrors.gender ? "#dc143c" : "" }}
+            >
+              Cinsiyet
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-required-label"
+              id="demo-simple-select-required"
+              value={gender}
+              label="Cinsiyet"
+              onChange={handleChangeForGender}
+              error={Boolean(formErrors.gender)}
+              helperText={formErrors.gender || " "}
+              onFocus={() => setFormErrors({ ...formErrors, gender: "" })}
+              onBlur={() => {
+                if (!gender) {
+                  setFormErrors({
+                    ...formErrors,
+                    gender: "Cinsiyet alanı zorunludur.",
+                  });
+                }
+              }}
+            >
+              <MenuItem value="">
+                <em>Lütfen cinsiyetinizi seçiniz.</em>
+              </MenuItem>
+              {genderList.map((genderItem) => (
+                <MenuItem key={genderItem.id} value={genderItem.id}>
+                  {genderItem.gender}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText
+              style={{ color: formErrors.gender ? "#dc143c" : "transparent" }}
+            >
+              Cinsiyet alanı zorunludur.
+            </FormHelperText>
+          </FormControl>
+          <div>
+            <Checkbox
+              checked={kvkk}
+              onChange={(e) => {
+                setKvkk(e.target.checked);
+                setFormErrors({
+                  ...formErrors,
+                  kvkk: e.target.checked
+                    ? ""
+                    : "KVKK Aydınlatma Metni alanının işaretlenmesi zorunludur.",
+                });
+              }}
+            />
+            <span style={{ color: "gray" }}>
+              KVKK Aydınlatma Metni'ni okudum.
+            </span>
+            <Link href="#" underline="hover">
+              Tıklayınız.
+            </Link>
+          </div>
+          <FormHelperText
             style={{
-              fontSize: "0.8em",
-              marginLeft: "20px",
+              color: formErrors.kvkk ? "#dc143c" : "transparent",
+              marginLeft: "25px",
             }}
           >
-            {formErrors.dateOfBirth ? "Doğum Tarihi alanı zorunludur." : " "}
-          </Typography>
-        </LocalizationProvider>
-
-        <FormControl required sx={{ m: 1, minWidth: 350, marginTop: "25px" }}>
-          <InputLabel
-            id="demo-simple-select-required-label"
-            style={{ color: formErrors.gender ? "#dc143c" : "" }}
-          >
-            Cinsiyet
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-required-label"
-            id="demo-simple-select-required"
-            value={gender}
-            label="Cinsiyet"
-            onChange={handleChangeForGender}
-            error={Boolean(formErrors.gender)}
-            helperText={formErrors.gender || " "}
-          >
-            <MenuItem value="">
-              <em>Lütfen cinsiyetinizi seçiniz.</em>
-            </MenuItem>
-            {genderList.map((genderItem) => (
-              <MenuItem key={genderItem.id} value={genderItem.id}>
-                {genderItem.gender}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText
-            style={{ color: formErrors.gender ? "#dc143c" : "transparent" }}
-          >
-            Cinsiyet alanı zorunludur.
+            {formErrors.kvkk || " "}
           </FormHelperText>
-        </FormControl>
-        <div>
-          <Checkbox
-            checked={kvkk}
-            onChange={(e) => setKvkk(e.target.checked)}
-          />
-          <span style={{ color: "gray" }}>
-            KVKK Aydınlatma Metni'ni okudum.
-          </span>
-          <Link href="#" underline="hover">
-            Tıklayınız.
-          </Link>
-        </div>
-        <FormHelperText
-          style={{
-            color: formErrors.kvkk ? "#dc143c" : "transparent",
-            marginLeft: "25px",
-          }}
-        >
-          KVKK Aydınlatma Metni alanı zorunludur.
-        </FormHelperText>
-        <Button
-          variant="contained"
-          sx={{ m: 1, minWidth: 350, textTransform: "none" }}
-          onClick={handleSignUp}
-        >
-          Kaydol
-        </Button>
-        <div
-          style={{ display: "flex", alignItems: "center", marginLeft: "10px" }}
-        >
-          <p style={{ color: "grey", marginRight: "5px", marginTop: "15px" }}>
-            Üyeliğiniz var mı?
-          </p>
-          <Link variant="body2" onClick={handleLoginClick}>
-            Giriş Yap
-          </Link>
-        </div>
-        {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
-      </Paper>
-    </Box>
+
+          <Button
+            variant="contained"
+            sx={{ m: 1, minWidth: 350, textTransform: "none" }}
+            onClick={handleSignUp}
+          >
+            Kaydol
+          </Button>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginLeft: "10px",
+            }}
+          >
+            <p style={{ color: "grey", marginRight: "5px", marginTop: "15px" }}>
+              Üyeliğiniz var mı?
+            </p>
+            <Link variant="body2" onClick={handleLoginClick}>
+              Giriş Yap
+            </Link>
+          </div>
+          {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
+        </Paper>
+      </Box>
     </>
   );
 };
