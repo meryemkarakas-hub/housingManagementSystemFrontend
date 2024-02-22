@@ -97,7 +97,7 @@ const Login = () => {
       // const { message, status } = data;
       dispatch(login(identityNumber, password))
         .then(() => {
-          navigate("/profile");
+          navigate("/dashboard");
           window.location.reload();
         })
         .catch((error) => {
