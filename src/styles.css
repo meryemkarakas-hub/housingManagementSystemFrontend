@@ -1,5 +1,5 @@
 .leftMenu {
-    width: 250px; /* Sol menü genişliği */
+    width: 300px; /* Sol menü genişliği */
     background-color: lightgray; /* Sol menü arka plan rengi */
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Gölgelendirme */
   }
