@@ -9,7 +9,29 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
-import SettingsIcon from "@mui/icons-material/Settings"; // Yeni ikon
+import SettingsIcon from "@mui/icons-material/Settings"; 
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
+import HouseIcon from '@mui/icons-material/House';
+import NightShelterIcon from '@mui/icons-material/NightShelter';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
+import DescriptionIcon from '@mui/icons-material/Description';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import ErrorIcon from '@mui/icons-material/Error';
+import HelpCenterIcon from '@mui/icons-material/HelpCenter';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import GroupIcon from '@mui/icons-material/Group';
+import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
+import EngineeringIcon from '@mui/icons-material/Engineering';
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import EmailIcon from '@mui/icons-material/Email';
+import SmsIcon from '@mui/icons-material/Sms';
+import RuleIcon from '@mui/icons-material/Rule';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DvrIcon from '@mui/icons-material/Dvr';
+
 
 
 export default function NestedList() {
@@ -32,7 +54,7 @@ export default function NestedList() {
     >
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <ApartmentIcon />
         </ListItemIcon>
         <ListItemText primary="Apartmanlar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -49,7 +71,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <LocationCityIcon />
         </ListItemIcon>
         <ListItemText primary="Siteler(Apartman)" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -66,7 +88,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <HouseIcon />
         </ListItemIcon>
         <ListItemText primary="Siteler(Müstakil)" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -83,7 +105,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <NightShelterIcon />
         </ListItemIcon>
         <ListItemText primary="Daireler" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -100,7 +122,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <ReceiptLongIcon />
         </ListItemIcon>
         <ListItemText primary="Aidatlar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -117,7 +139,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <FamilyRestroomIcon />
         </ListItemIcon>
         <ListItemText primary="Kiralar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -134,7 +156,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <DescriptionIcon />
         </ListItemIcon>
         <ListItemText primary="Borçlar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -151,7 +173,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <CampaignIcon />
         </ListItemIcon>
         <ListItemText primary="Duyurular" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -168,7 +190,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <ErrorIcon />
         </ListItemIcon>
         <ListItemText primary="Şikayetler" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -185,7 +207,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <HelpCenterIcon />
         </ListItemIcon>
         <ListItemText primary="İstek ve Öneriler" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -202,7 +224,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <SupportAgentIcon />
         </ListItemIcon>
         <ListItemText primary="Hizmetler-Firmalar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -219,7 +241,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <GroupIcon />
         </ListItemIcon>
         <ListItemText primary="Kullanıcılar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -236,7 +258,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <SpeakerNotesIcon />
         </ListItemIcon>
         <ListItemText primary="Notlar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -253,7 +275,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <EngineeringIcon />
         </ListItemIcon>
         <ListItemText primary="Çalışanlar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -270,7 +292,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <ShoppingCartCheckoutIcon />
         </ListItemIcon>
         <ListItemText primary="Giderler" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -287,7 +309,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <EmailIcon />
         </ListItemIcon>
         <ListItemText primary="Mail Gönder" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -304,7 +326,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <SmsIcon />
         </ListItemIcon>
         <ListItemText primary="SMS Gönder" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -321,7 +343,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <RuleIcon />
         </ListItemIcon>
         <ListItemText primary="Kurallar" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -338,7 +360,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <CalculateIcon />
         </ListItemIcon>
         <ListItemText primary="Hesap Makinesi" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -355,7 +377,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <AccountCircleIcon />
         </ListItemIcon>
         <ListItemText primary="Profil" />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -372,7 +394,7 @@ export default function NestedList() {
       </Collapse>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
-          <InboxIcon />
+          <DvrIcon />
         </ListItemIcon>
         <ListItemText primary="Log Kayıtları" />
         {open ? <ExpandLess /> : <ExpandMore />}
