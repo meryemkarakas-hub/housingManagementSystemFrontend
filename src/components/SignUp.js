@@ -225,14 +225,14 @@ const SignUp = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const validateTCNumber = (tcNumber) => {
+  const validateIdentityNumber = (identityNumber) => {
     const tcRegex = /^[1-9]{1}[0-9]{9}[02468]{1}$/;
-    return tcRegex.test(tcNumber);
+    return tcRegex.test(identityNumber);
   };
 
   const handleSignUp = async () => {
     setShowErrors(true);
-    if (!validateTCNumber(identityNumber)) {
+    if (!validateIdentityNumber(identityNumber)) {
       setIdentityError(true);
     } else {
       setIdentityError(false);
