@@ -361,6 +361,7 @@ const SignUp = () => {
             label="TC Kimlik Numarası"
             value={identityNumber}
             onChange={handleIdentityNumberChange}
+            autoComplete="off"
             inputProps={{
               inputMode: "numeric",
               pattern: "[0-9]*",
@@ -376,6 +377,7 @@ const SignUp = () => {
             label="Ad"
             value={name}
             onChange={handleNameChange}
+            autoComplete="off"
             inputProps={{
               maxLength: 20,
             }}
@@ -389,6 +391,7 @@ const SignUp = () => {
             label="Soyad"
             value={surname}
             onChange={handleSurnameChange}
+            autoComplete="off"
             inputProps={{
               maxLength: 20,
             }}
@@ -402,6 +405,7 @@ const SignUp = () => {
             label="E-posta Adresi"
             value={emailAddress}
             onChange={handleEmailChange}
+            autoComplete="off"
             inputProps={{
               maxLength: 50,
             }}
@@ -415,6 +419,7 @@ const SignUp = () => {
             label="Cep Telefonu"
             value={mobileNumber}
             onChange={handleMobileNumberChange}
+            autoComplete="off"
             inputProps={{
               maxLength: 10,
             }}
