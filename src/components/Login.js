@@ -21,9 +21,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/auth.service";
-import { useDispatch,useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../actions/auth";
-
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +31,7 @@ const Login = () => {
   const [identityError, setIdentityError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const dispatch = useDispatch();
-  const { message } = useSelector(state => state.message);
+  const { message } = useSelector((state) => state.message);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -88,23 +87,18 @@ const Login = () => {
     setIdentityError(false);
     setPasswordError(false);
 
-
-
     try {
-      
       // const data=authService.login(identityNumber,password);
 
       // const { message, status } = data;
       dispatch(login(identityNumber, password))
         .then(() => {
-           navigate("/menu");
+          navigate("/select-management");
           // navigate("/dashboard");
           window.location.reload();
         })
         .catch((error) => {
-       
           showSnackbar(message, 0);
-
         });
 
       // if (status === 1) {

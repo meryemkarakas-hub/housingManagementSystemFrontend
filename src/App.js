@@ -7,6 +7,7 @@ import Activation from "./components/Activation";
 import Ayarlar from "./components/Ayarlar";
 import Menu from "./components/Menu";
 import DashboardMenu from "./components/DashboardMenu";
+import SelectManagement from "./components/SelectManagement";
 
 function App() {
   const containerStyle = {
@@ -20,15 +21,16 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route exact path="/menu" element={<Menu/>} />
-          <Route exact path="/ayarlar" element={<Ayarlar/>} />
-          <Route exact path="/login" element={<Login />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route
             path="/auth/activation/:activationCode"
             element={<Activation />}
           />
+          <Route exact path="/login" element={<Login />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route exact path="/menu" element={<Menu />} />
+          <Route exact path="/ayarlar" element={<Ayarlar />} />
+          <Route exact path="/select-management" element={<SelectManagement />} />
         </Routes>
       </Router>
     </div>
