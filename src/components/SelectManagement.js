@@ -18,8 +18,9 @@ import axiosInstance from "../services/axiosInstance";
 
 export default function SelectManagement() {
   const [formData, setFormData] = useState({
-    id: "",
+    id: "", 
     informationManagementSelect: "",
+    userRole:""
   });
   const [formErrors, setFormErrors] = useState({});
   const [informationManagementSelectList, setInformationManagementSelectList] =
@@ -28,7 +29,13 @@ export default function SelectManagement() {
     useState("");
 
   const handleChangeForInformationManagementSelect = (event) => {
-    setInformationManagementSelect(event.target.value);
+    const selectedValue = event.target.value;
+    setInformationManagementSelect(selectedValue);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      id: selectedValue.id,
+      informationManagementSelect: selectedValue.value,
+    }));
   };
 
   useEffect(() => {
@@ -45,7 +52,7 @@ export default function SelectManagement() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const apiUrl = "/user/information/management-select";
+    const apiUrl = "/user/management-select";
 
     axiosInstance
       .post(apiUrl, formData)
@@ -58,6 +65,7 @@ export default function SelectManagement() {
         console.error("Error:", error);
       });
   };
+
   return (
     <Container
       maxWidth="sm"
@@ -125,7 +133,10 @@ export default function SelectManagement() {
                     (informationManagementSelectItem) => (
                       <MenuItem
                         key={informationManagementSelectItem.id}
-                        value={informationManagementSelectItem.id}
+                        value={{
+                          id: informationManagementSelectItem.id,
+                          value: informationManagementSelectItem.informationManagementSelect
+                        }}
                       >
                         {
                           informationManagementSelectItem.informationManagementSelect
@@ -146,9 +157,9 @@ export default function SelectManagement() {
               </FormControl>
 
               <Button
+                type="submit"
                 variant="contained"
                 sx={{ m: 1, minWidth: 350, textTransform: "none" }}
-                onClick={handleSubmit}
               >
                 Oturum Seç
               </Button>
