@@ -30,11 +30,13 @@ export default function SelectManagement() {
 
   const handleChangeForInformationManagementSelect = (event) => {
     const selectedValue = event.target.value;
-    setInformationManagementSelect(selectedValue);
+    const userRole = selectedValue.value.split("-")[1].trim();
+    setInformationManagementSelect(selectedValue.value);
     setFormData((prevFormData) => ({
       ...prevFormData,
       id: selectedValue.id,
       informationManagementSelect: selectedValue.value,
+      userRole: userRole
     }));
   };
 
@@ -133,10 +135,8 @@ export default function SelectManagement() {
                     (informationManagementSelectItem) => (
                       <MenuItem
                         key={informationManagementSelectItem.id}
-                        value={{
-                          id: informationManagementSelectItem.id,
-                          value: informationManagementSelectItem.informationManagementSelect
-                        }}
+                        value={informationManagementSelectItem.informationManagementSelect}
+
                       >
                         {
                           informationManagementSelectItem.informationManagementSelect
