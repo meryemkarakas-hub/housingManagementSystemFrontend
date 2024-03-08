@@ -12,11 +12,28 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import axiosInstance from "../services/axiosInstance";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SelectManagement() {
+  const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message, status) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status === 0 ? "error" : "success");
+    setSnackbarOpen(true);
+  };
   const [formData, setFormData] = useState({
     id: "",
     informationManagementSelect: "",
@@ -70,6 +87,13 @@ export default function SelectManagement() {
         console.log("Response from the server:", response.data);
 
         const { message, status } = response.data;
+        if (status === 1) {
+          console.log(message);
+          showSnackbar(message, 1);
+          setTimeout(() => {
+            navigate("/menu");
+          }, 6000);
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -77,6 +101,17 @@ export default function SelectManagement() {
   };
 
   return (
+    <>
+    <Snackbar
+    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+    open={snackbarOpen}
+    autoHideDuration={6000}
+    onClose={handleSnackbarClose}
+  >
+    <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+      {snackbarMessage}
+    </Alert>
+  </Snackbar>
     <Container
       maxWidth="sm"
       sx={{
@@ -173,5 +208,6 @@ export default function SelectManagement() {
         </Box>
       </Paper>
     </Container>
+    </>
   );
 }
