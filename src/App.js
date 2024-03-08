@@ -8,6 +8,8 @@ import Ayarlar from "./components/Ayarlar";
 import Menu from "./components/Menu";
 import DashboardMenu from "./components/DashboardMenu";
 import SelectManagement from "./components/SelectManagement";
+import AddManagement from "./components/AddManagement";
+
 
 function App() {
   const containerStyle = {
@@ -31,6 +33,8 @@ function App() {
           <Route exact path="/menu" element={<Menu />} />
           <Route exact path="/ayarlar" element={<Ayarlar />} />
           <Route exact path="/select-management" element={<SelectManagement />} />
+          <Route exact path="/add-management" element={<AddManagement />} />
+
         </Routes>
       </Router>
     </div>

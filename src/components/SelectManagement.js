@@ -62,6 +62,9 @@ export default function SelectManagement() {
           } else {
             setInformationManagementSelectList(response.data);
           }
+          if (!response.data || response.data.length === 0) {
+            navigate("/add-management");
+          }
         })
         .catch((error) => {
           console.error("Error fetching management select data:", error);
