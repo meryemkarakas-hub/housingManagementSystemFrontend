@@ -65,16 +65,21 @@ export default function SelectManagement() {
     
     
 
-  useEffect(() => {
-    axiosInstance
-      .get("/user/information/management-select")
-      .then((response) => {
-        setInformationManagementSelectList(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching gender data:", error);
-      });
-  }, []);
+    useEffect(() => {
+      axiosInstance
+        .get("/user/information/management-select")
+        .then((response) => {
+          if (response.data && response.data.length === 1) {
+            navigate("/menu");
+          } else {
+            setInformationManagementSelectList(response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching management select data:", error);
+        });
+    }, []);
+    
 
   const handleSubmit = (event) => {
     event.preventDefault();
