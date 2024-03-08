@@ -47,20 +47,8 @@ export default function SelectManagement() {
 
     const handleChangeForInformationManagementSelect = (event) => {
       const selectedValue = event.target.value;
-      if (selectedValue) {
-        const selectedItem = informationManagementSelectList.find(item => item.informationManagementSelect === selectedValue);
-        if (selectedItem) {
-          const { id } = selectedItem; 
-          const userRole = selectedValue.split("-")[1].trim();
           setInformationManagementSelect(selectedValue);
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            id: id, 
-            informationManagementSelect: selectedValue,
-            userRole: userRole
-          }));
-        }
-      }
+          setFormData(selectedValue);
     };
     
     
@@ -70,7 +58,7 @@ export default function SelectManagement() {
         .get("/user/information/management-select")
         .then((response) => {
           if (response.data && response.data.length === 1) {
-            navigate("/menu");
+            postSelectedManagement(response.data);
           } else {
             setInformationManagementSelectList(response.data);
           }
@@ -80,14 +68,11 @@ export default function SelectManagement() {
         });
     }, []);
     
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
+  
+  const postSelectedManagement = (selection) => {
     const apiUrl = "/user/management-select";
-
     axiosInstance
-      .post(apiUrl, formData)
+      .post(apiUrl, selection ? selection[0] : formData)
       .then((response) => {
         console.log("Response from the server:", response.data);
 
@@ -103,6 +88,12 @@ export default function SelectManagement() {
       .catch((error) => {
         console.error("Error:", error);
       });
+
+  }  
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    postSelectedManagement(null);    
   };
 
   return (
@@ -183,7 +174,7 @@ export default function SelectManagement() {
                     (informationManagementSelectItem) => (
                       <MenuItem
                         key={informationManagementSelectItem.id}
-                        value={informationManagementSelectItem.informationManagementSelect}
+                        value={informationManagementSelectItem}
                       >
                         {informationManagementSelectItem.informationManagementSelect}
                       </MenuItem>
