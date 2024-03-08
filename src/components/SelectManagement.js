@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -12,15 +13,14 @@ import {
   MenuItem,
   FormHelperText,
 } from "@mui/material";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosInstance";
+import axios from "axios";
 
 export default function SelectManagement() {
   const [formData, setFormData] = useState({
-    id: "", 
+    id: "",
     informationManagementSelect: "",
-    userRole:""
+    userRole: ""
   });
   const [formErrors, setFormErrors] = useState({});
   const [informationManagementSelectList, setInformationManagementSelectList] =
@@ -28,17 +28,25 @@ export default function SelectManagement() {
   const [informationManagementSelect, setInformationManagementSelect] =
     useState("");
 
-  const handleChangeForInformationManagementSelect = (event) => {
-    const selectedValue = event.target.value;
-    const userRole = selectedValue.value.split("-")[1].trim();
-    setInformationManagementSelect(selectedValue.value);
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      id: selectedValue.id,
-      informationManagementSelect: selectedValue.value,
-      userRole: userRole
-    }));
-  };
+    const handleChangeForInformationManagementSelect = (event) => {
+      const selectedValue = event.target.value;
+      if (selectedValue) {
+        const selectedItem = informationManagementSelectList.find(item => item.informationManagementSelect === selectedValue);
+        if (selectedItem) {
+          const { id } = selectedItem; 
+          const userRole = selectedValue.split("-")[1].trim();
+          setInformationManagementSelect(selectedValue);
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            id: id, 
+            informationManagementSelect: selectedValue,
+            userRole: userRole
+          }));
+        }
+      }
+    };
+    
+    
 
   useEffect(() => {
     axiosInstance
@@ -136,11 +144,8 @@ export default function SelectManagement() {
                       <MenuItem
                         key={informationManagementSelectItem.id}
                         value={informationManagementSelectItem.informationManagementSelect}
-
                       >
-                        {
-                          informationManagementSelectItem.informationManagementSelect
-                        }
+                        {informationManagementSelectItem.informationManagementSelect}
                       </MenuItem>
                     )
                   )}
