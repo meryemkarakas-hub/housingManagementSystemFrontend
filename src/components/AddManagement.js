@@ -24,10 +24,22 @@ export default function AddManagement() {
   const [formErrors, setFormErrors] = useState({});
   const [housingTypes, setHousingTypes] = useState("");
   const [housingTypesList, setHousingTypesList] = useState([]);
+  const [city, setCity] = useState("");
+  const [cityList, setCityList] = useState([]);
+  const [country, setCountry] = useState("");
+  const [countryList, setCountryList] = useState([]);
   const [name, setName] = useState("");
 
   const handleChangeForHousingTypes = (event) => {
     setHousingTypes(event.target.value);
+  };
+
+  const handleChangeForCity = (event) => {
+    setCity(event.target.value);
+  };
+
+  const handleChangeForCountry = (event) => {
+    setCountry(event.target.value);
   };
 
   const handleNameChange = (event) => {
@@ -54,6 +66,28 @@ export default function AddManagement() {
       })
       .catch((error) => {
         console.error("Error fetching housing types data:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axiosInstance
+      .get("http://localhost:8080/api/reference/city")
+      .then((response) => {
+        setCityList(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching city data:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axiosInstance
+      .get("http://localhost:8080/api/reference/country")
+      .then((response) => {
+        setCityList(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching country data:", error);
       });
   }, []);
 
@@ -140,6 +174,99 @@ export default function AddManagement() {
                   Konut Tipi alanı zorunludur.
                 </FormHelperText>
               </FormControl>
+
+              <FormControl
+                required
+                sx={{ m: 1, minWidth: 350, marginTop: "25px" }}
+              >
+                <InputLabel
+                  id="demo-simple-select-required-label"
+                  style={{ color: formErrors.city ? "#dc143c" : "" }}
+                >
+                  İl
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-required-label"
+                  id="demo-simple-select-required"
+                  value={city}
+                  label="İl"
+                  onChange={handleChangeForCity}
+                  error={Boolean(formErrors.city)}
+                  helperText={formErrors.city || " "}
+                  onFocus={() => setFormErrors({ ...formErrors, city: "" })}
+                  onBlur={() => {
+                    if (!city) {
+                      setFormErrors({
+                        ...formErrors,
+                        city: "İl alanı zorunludur.",
+                      });
+                    }
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>Lütfen ili seçiniz.</em>
+                  </MenuItem>
+                  {cityList.map((cityItem) => (
+                    <MenuItem key={cityItem.id} value={cityItem.id}>
+                      {cityItem.city}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText
+                  style={{
+                    color: formErrors.city ? "#dc143c" : "transparent",
+                  }}
+                >
+                  İl alanı zorunludur.
+                </FormHelperText>
+              </FormControl>
+
+              <FormControl
+                required
+                sx={{ m: 1, minWidth: 350, marginTop: "25px" }}
+              >
+                <InputLabel
+                  id="demo-simple-select-required-label"
+                  style={{ color: formErrors.country ? "#dc143c" : "" }}
+                >
+                  İlçe
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-required-label"
+                  id="demo-simple-select-required"
+                  value={country}
+                  label="İlçe"
+                  onChange={handleChangeForCountry}
+                  error={Boolean(formErrors.country)}
+                  helperText={formErrors.country || " "}
+                  onFocus={() => setFormErrors({ ...formErrors, country: "" })}
+                  onBlur={() => {
+                    if (!country) {
+                      setFormErrors({
+                        ...formErrors,
+                        country: "İlçe alanı zorunludur.",
+                      });
+                    }
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>Lütfen ilçeyi seçiniz.</em>
+                  </MenuItem>
+                  {countryList.map((countryItem) => (
+                    <MenuItem key={countryItem.id} value={countryItem.id}>
+                      {countryItem.country}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText
+                  style={{
+                    color: formErrors.country ? "#dc143c" : "transparent",
+                  }}
+                >
+                  İlçe alanı zorunludur.
+                </FormHelperText>
+              </FormControl>
+
 
              
               <TextField
