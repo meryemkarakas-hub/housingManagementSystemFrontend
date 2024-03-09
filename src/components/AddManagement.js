@@ -84,7 +84,7 @@ export default function AddManagement() {
     axiosInstance
       .get("http://localhost:8080/api/reference/country")
       .then((response) => {
-        setCityList(response.data);
+        setCountryList(response.data);
       })
       .catch((error) => {
         console.error("Error fetching country data:", error);
@@ -221,7 +221,7 @@ export default function AddManagement() {
                 </FormHelperText>
               </FormControl>
 
-              <FormControl
+             { <FormControl
                 required
                 sx={{ m: 1, minWidth: 350, marginTop: "25px" }}
               >
@@ -265,7 +265,7 @@ export default function AddManagement() {
                 >
                   İlçe alanı zorunludur.
                 </FormHelperText>
-              </FormControl>
+              </FormControl>}
 
 
              
