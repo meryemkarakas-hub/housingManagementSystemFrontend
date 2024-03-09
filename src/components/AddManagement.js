@@ -10,6 +10,8 @@ import {
   MenuItem,
   FormHelperText,
   Select,
+  TextField
+
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -27,6 +29,12 @@ export default function AddManagement() {
   const [cityList, setCityList] = useState([]);
   const [country, setCountry] = useState("");
   const [countryList, setCountryList] = useState([]);
+  const [address, setAddress] = useState("");
+  const [apartmentName, setApartmentName] = useState("");
+  const [numberOfFlats, setNumberOfFlats] = useState("");
+
+
+
 
 
   const handleChangeForHousingTypes = (event) => {
@@ -77,6 +85,52 @@ export default function AddManagement() {
         console.error("Error fetching city data:", error);
       });
   }, []);
+
+  const handleAddressChange = (event) => {
+    const inputValue = event.target.value;
+    const anyCharacter = /^[^\s]*$/;
+    if (anyCharacter.test(inputValue) || inputValue === "") {
+        setAddress(inputValue);
+        setFormErrors({ ...formErrors, address: "" });
+    }
+    if (inputValue === "") {
+        setFormErrors({ ...formErrors, address: "Adres alanı zorunludur." });
+    }
+};
+
+const handleApartmentNameChange = (event) => {
+  const inputValue = event.target.value;
+  const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
+  if (onlyLetters.test(inputValue) || inputValue === "") {
+    setApartmentName(inputValue);
+    setFormErrors({ ...formErrors, apartmentName: "" });
+  } else {
+    setFormErrors({
+      ...formErrors,
+      apartmentName: "Apartman Adı alanı sadece harflerden oluşmalıdır.",
+    });
+  }
+  if (inputValue === "") {
+    setFormErrors({ ...formErrors, apartmentName: "Apartman Adı alanı zorunludur." });
+  }
+};
+
+const handleNumberOfFlatsChange = (event) => {
+  const inputValue = event.target.value;
+  const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
+  if (inputValue === "") {
+    setNumberOfFlats("");
+    setFormErrors({ ...formErrors, numberOfFlats: "Daire Sayısı alanı zorunludur." });
+  } else if (onlyNumbers.test(inputValue)) {
+    setNumberOfFlats(inputValue);
+    setFormErrors({ ...formErrors, numberOfFlats: "" });
+  } else {
+    setFormErrors({ ...formErrors, numberOfFlats: "Daire Sayısı alanı rakamlardan oluşmalıdır." });
+  }
+  if (inputValue.length > 3) {
+    setFormErrors({ ...formErrors, numberOfFlats: "Daire Sayısı alanı en fazla üç rakamdan oluşmalıdır." });
+  }
+};
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -215,6 +269,45 @@ export default function AddManagement() {
                   ))}
                 </Select>
               </FormControl>
+              <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.address)}
+            helperText={formErrors.address || " "}
+            id="demo-helper-text-misaligned"
+            label="Adres"
+            value={address}
+            onChange={handleAddressChange}
+            autoComplete="off"
+            inputProps={{
+              maxLength: 200,
+            }}
+          />
+           <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.apartmentName)}
+            helperText={formErrors.apartmentName || " "}
+            id="demo-helper-text-misaligned"
+            label="Apartman Adı"
+            value={apartmentName}
+            onChange={handleApartmentNameChange}
+            autoComplete="off"
+            inputProps={{
+              maxLength: 50,
+            }}
+          />
+          <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.numberOfFlats)}
+            helperText={formErrors.numberOfFlats || " "}
+            id="demo-helper-text-misaligned"
+            label="Daire Sayısı"
+            value={numberOfFlats}
+            onChange={handleNumberOfFlatsChange}
+            autoComplete="off"
+          />
             
               <Button
                 variant="contained"
