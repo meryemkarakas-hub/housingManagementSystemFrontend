@@ -10,7 +10,6 @@ import {
   MenuItem,
   FormHelperText,
   Select,
-  TextField,
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -28,36 +27,13 @@ export default function AddManagement() {
   const [cityList, setCityList] = useState([]);
   const [country, setCountry] = useState("");
   const [countryList, setCountryList] = useState([]);
-  const [name, setName] = useState("");
+
 
   const handleChangeForHousingTypes = (event) => {
     setHousingTypes(event.target.value);
   };
 
-  const handleChangeForCity = (event) => {
-    setCity(event.target.value);
-  };
 
-  const handleChangeForCountry = (event) => {
-    setCountry(event.target.value);
-  };
-
-  const handleNameChange = (event) => {
-    const inputValue = event.target.value;
-    const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
-    if (onlyLetters.test(inputValue) || inputValue === "") {
-      setName(inputValue);
-      setFormErrors({ ...formErrors, name: "" });
-    } else {
-      setFormErrors({
-        ...formErrors,
-        name: "Ad alanı sadece harflerden oluşmalıdır.",
-      });
-    }
-    if (inputValue === "") {
-      setFormErrors({ ...formErrors, name: "Ad alanı zorunludur." });
-    }
-  };
   useEffect(() => {
     axiosInstance
       .get("http://localhost:8080/api/reference/housing-types")
@@ -68,6 +44,28 @@ export default function AddManagement() {
         console.error("Error fetching housing types data:", error);
       });
   }, []);
+
+  const handleChangeForCity = (event) => {
+    const selectedCity = event.target.value;
+    setCity(selectedCity);
+    setCountry(""); // İl değiştiğinde ilçe bilgisini sıfırla
+    fetchCountry(selectedCity); // Seçilen ile göre ilçeleri getir
+  };
+
+  const handleChangeForCountry = (event) => {
+    setCountry(event.target.value);
+  };
+
+  const fetchCountry = (cityId) => {
+    axiosInstance
+      .get(`http://localhost:8080/api/reference/country/${cityId}`)
+      .then((response) => {
+        setCountryList(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching country data:", error);
+      });
+  };
 
   useEffect(() => {
     axiosInstance
@@ -80,33 +78,11 @@ export default function AddManagement() {
       });
   }, []);
 
-  useEffect(() => {
-    axiosInstance
-      .get("http://localhost:8080/api/reference/country")
-      .then((response) => {
-        setCountryList(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching country data:", error);
-      });
-  }, []);
-
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const apiUrl = "http://localhost:8080/api/user/login";
-
-    axios
-      .post(apiUrl, formData)
-      .then((response) => {
-        console.log("Response from the server:", response.data);
-
-        const { message, status } = response.data;
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    // Burada ilçe bilgisini de formData'ya ekleyebilirsiniz
   };
+
   return (
     <Container
       maxWidth="sm"
@@ -129,7 +105,7 @@ export default function AddManagement() {
           </Typography>
           <form onSubmit={handleSubmit}>
             <Stack direction="column" spacing={3}>
-              <FormControl
+            <FormControl
                 required
                 sx={{ m: 1, minWidth: 350, marginTop: "25px" }}
               >
@@ -174,7 +150,6 @@ export default function AddManagement() {
                   Konut Tipi alanı zorunludur.
                 </FormHelperText>
               </FormControl>
-
               <FormControl
                 required
                 sx={{ m: 1, minWidth: 350, marginTop: "25px" }}
@@ -220,34 +195,15 @@ export default function AddManagement() {
                   İl alanı zorunludur.
                 </FormHelperText>
               </FormControl>
-
-             { <FormControl
-                required
-                sx={{ m: 1, minWidth: 350, marginTop: "25px" }}
-              >
-                <InputLabel
-                  id="demo-simple-select-required-label"
-                  style={{ color: formErrors.country ? "#dc143c" : "" }}
-                >
-                  İlçe
-                </InputLabel>
+              
+              <FormControl required sx={{ m: 1, minWidth: 350 }}>
+                <InputLabel id="demo-simple-select-required-label">İlçe</InputLabel>
                 <Select
                   labelId="demo-simple-select-required-label"
                   id="demo-simple-select-required"
                   value={country}
                   label="İlçe"
                   onChange={handleChangeForCountry}
-                  error={Boolean(formErrors.country)}
-                  helperText={formErrors.country || " "}
-                  onFocus={() => setFormErrors({ ...formErrors, country: "" })}
-                  onBlur={() => {
-                    if (!country) {
-                      setFormErrors({
-                        ...formErrors,
-                        country: "İlçe alanı zorunludur.",
-                      });
-                    }
-                  }}
                 >
                   <MenuItem value="">
                     <em>Lütfen ilçeyi seçiniz.</em>
@@ -258,59 +214,8 @@ export default function AddManagement() {
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText
-                  style={{
-                    color: formErrors.country ? "#dc143c" : "transparent",
-                  }}
-                >
-                  İlçe alanı zorunludur.
-                </FormHelperText>
-              </FormControl>}
-
-
-             
-              <TextField
-            required
-            sx={{ m: 1, minWidth: 350 }}
-            error={Boolean(formErrors.name)}
-            helperText={formErrors.name || " "}
-            id="demo-helper-text-misaligned"
-            label="Ad"
-            value={name}
-            onChange={handleNameChange}
-            autoComplete="off"
-            inputProps={{
-              maxLength: 20,
-            }}
-          />
-           <TextField
-            required
-            sx={{ m: 1, minWidth: 350 }}
-            error={Boolean(formErrors.name)}
-            helperText={formErrors.name || " "}
-            id="demo-helper-text-misaligned"
-            label="Ad"
-            value={name}
-            onChange={handleNameChange}
-            autoComplete="off"
-            inputProps={{
-              maxLength: 20,
-            }}
-          />
-           <TextField
-            required
-            sx={{ m: 1, minWidth: 350 }}
-            error={Boolean(formErrors.name)}
-            helperText={formErrors.name || " "}
-            id="demo-helper-text-misaligned"
-            label="Ad"
-            value={name}
-            onChange={handleNameChange}
-            autoComplete="off"
-            inputProps={{
-              maxLength: 20,
-            }}
-          />
+              </FormControl>
+            
               <Button
                 variant="contained"
                 sx={{ m: 1, minWidth: 350, textTransform: "none" }}
