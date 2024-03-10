@@ -10,8 +10,7 @@ import {
   MenuItem,
   FormHelperText,
   Select,
-  TextField
-
+  TextField,
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -32,15 +31,16 @@ export default function AddManagement() {
   const [address, setAddress] = useState("");
   const [apartmentName, setApartmentName] = useState("");
   const [numberOfFlats, setNumberOfFlats] = useState("");
-
-
-
-
+  const [numberOfBlocks, setNumberOfBlocks] = useState("");
+  const [siteApartmentName, setSiteApartmentName] = useState("");
+  const [blockName, setBlockName] = useState("");
+  const [numberOfFlatsForBlock, setNumberOfFlatsForBlock] = useState("");
+  const [siteSingleHouseName, setSiteSingleHouseName] = useState("");
+  const [numberOfSingleHouse, setNumberOfSingleHouse] = useState("");
 
   const handleChangeForHousingTypes = (event) => {
     setHousingTypes(event.target.value);
   };
-
 
   useEffect(() => {
     axiosInstance
@@ -90,47 +90,199 @@ export default function AddManagement() {
     const inputValue = event.target.value;
     const anyCharacter = /^[^\s]*$/;
     if (anyCharacter.test(inputValue) || inputValue === "") {
-        setAddress(inputValue);
-        setFormErrors({ ...formErrors, address: "" });
+      setAddress(inputValue);
+      setFormErrors({ ...formErrors, address: "" });
     }
     if (inputValue === "") {
-        setFormErrors({ ...formErrors, address: "Adres alanı zorunludur." });
+      setFormErrors({ ...formErrors, address: "Adres alanı zorunludur." });
     }
-};
+  };
 
-const handleApartmentNameChange = (event) => {
-  const inputValue = event.target.value;
-  const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
-  if (onlyLetters.test(inputValue) || inputValue === "") {
-    setApartmentName(inputValue);
-    setFormErrors({ ...formErrors, apartmentName: "" });
-  } else {
-    setFormErrors({
-      ...formErrors,
-      apartmentName: "Apartman Adı alanı sadece harflerden oluşmalıdır.",
-    });
-  }
-  if (inputValue === "") {
-    setFormErrors({ ...formErrors, apartmentName: "Apartman Adı alanı zorunludur." });
-  }
-};
+  const handleApartmentNameChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
+    if (onlyLetters.test(inputValue) || inputValue === "") {
+      setApartmentName(inputValue);
+      setFormErrors({ ...formErrors, apartmentName: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        apartmentName: "Apartman Adı alanı sadece harflerden oluşmalıdır.",
+      });
+    }
+    if (inputValue === "") {
+      setFormErrors({
+        ...formErrors,
+        apartmentName: "Apartman Adı alanı zorunludur.",
+      });
+    }
+  };
 
-const handleNumberOfFlatsChange = (event) => {
-  const inputValue = event.target.value;
-  const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
-  if (inputValue === "") {
-    setNumberOfFlats("");
-    setFormErrors({ ...formErrors, numberOfFlats: "Daire Sayısı alanı zorunludur." });
-  } else if (onlyNumbers.test(inputValue)) {
-    setNumberOfFlats(inputValue);
-    setFormErrors({ ...formErrors, numberOfFlats: "" });
-  } else {
-    setFormErrors({ ...formErrors, numberOfFlats: "Daire Sayısı alanı rakamlardan oluşmalıdır." });
-  }
-  if (inputValue.length > 3) {
-    setFormErrors({ ...formErrors, numberOfFlats: "Daire Sayısı alanı en fazla üç rakamdan oluşmalıdır." });
-  }
-};
+  const handleNumberOfFlatsChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
+    if (inputValue === "") {
+      setNumberOfFlats("");
+      setFormErrors({
+        ...formErrors,
+        numberOfFlats: "Daire Sayısı alanı zorunludur.",
+      });
+    } else if (onlyNumbers.test(inputValue)) {
+      setNumberOfFlats(inputValue);
+      setFormErrors({ ...formErrors, numberOfFlats: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        numberOfFlats: "Daire Sayısı alanı rakamlardan oluşmalıdır.",
+      });
+    }
+    if (inputValue.length > 3) {
+      setFormErrors({
+        ...formErrors,
+        numberOfFlats: "Daire Sayısı alanı en fazla üç rakamdan oluşmalıdır.",
+      });
+    }
+  };
+
+  const handleSiteApartmentNameChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
+    if (onlyLetters.test(inputValue) || inputValue === "") {
+      setSiteApartmentName(inputValue);
+      setFormErrors({ ...formErrors, siteApartmentName: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        siteApartmentName: "Site Adı alanı sadece harflerden oluşmalıdır.",
+      });
+    }
+    if (inputValue === "") {
+      setFormErrors({
+        ...formErrors,
+        siteApartmentName: "Site Adı alanı zorunludur.",
+      });
+    }
+  };
+
+  const handleNumberOfBlocksChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
+    if (inputValue === "") {
+      setNumberOfBlocks("");
+      setFormErrors({
+        ...formErrors,
+        numberOfBlocks: "Blok Sayısı alanı zorunludur.",
+      });
+    } else if (onlyNumbers.test(inputValue)) {
+      setNumberOfBlocks(inputValue);
+      setFormErrors({ ...formErrors, numberOfBlocks: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        numberOfBlocks: "Blok Sayısı alanı rakamlardan oluşmalıdır.",
+      });
+    }
+    if (inputValue.length > 3) {
+      setFormErrors({
+        ...formErrors,
+        numberOfBlocks: "Blok Sayısı alanı en fazla üç rakamdan oluşmalıdır.",
+      });
+    }
+  };
+
+  const handleBlockNameChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
+    if (onlyLetters.test(inputValue) || inputValue === "") {
+      setBlockName(inputValue);
+      setFormErrors({ ...formErrors, blockName: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        blockName: "Blok Adı alanı sadece harflerden oluşmalıdır.",
+      });
+    }
+    if (inputValue === "") {
+      setFormErrors({
+        ...formErrors,
+        blockName: "Blok Adı alanı zorunludur.",
+      });
+    }
+  };
+
+  const handleNumberOfFlatsForBlockChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
+    if (inputValue === "") {
+      setNumberOfFlatsForBlock("");
+      setFormErrors({
+        ...formErrors,
+        numberOfFlatsForBlock: "Daire Sayısı alanı zorunludur.",
+      });
+    } else if (onlyNumbers.test(inputValue)) {
+      setNumberOfFlatsForBlock(inputValue);
+      setFormErrors({ ...formErrors, numberOfFlatsForBlock: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        numberOfFlatsForBlock: "Daire Sayısı alanı rakamlardan oluşmalıdır.",
+      });
+    }
+    if (inputValue.length > 3) {
+      setFormErrors({
+        ...formErrors,
+        numberOfFlatsForBlock:
+          "Daire Sayısı alanı en fazla üç rakamdan oluşmalıdır.",
+      });
+    }
+  };
+
+  const handleSiteSingleHouseNameChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
+    if (onlyLetters.test(inputValue) || inputValue === "") {
+      setSiteSingleHouseName(inputValue);
+      setFormErrors({ ...formErrors, siteSingleHouseName: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        siteSingleHouseName: "Site Adı alanı sadece harflerden oluşmalıdır.",
+      });
+    }
+    if (inputValue === "") {
+      setFormErrors({
+        ...formErrors,
+        siteSingleHouseName: "Site Adı alanı zorunludur.",
+      });
+    }
+  };
+
+  const handleNumberOfSingleHouseChange = (event) => {
+    const inputValue = event.target.value;
+    const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
+    if (inputValue === "") {
+      setNumberOfSingleHouse("");
+      setFormErrors({
+        ...formErrors,
+        numberOfSingleHouse: "Konut Sayısı alanı zorunludur.",
+      });
+    } else if (onlyNumbers.test(inputValue)) {
+      setNumberOfSingleHouse(inputValue);
+      setFormErrors({ ...formErrors, numberOfSingleHouse: "" });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        numberOfSingleHouse: "Konut Sayısı alanı rakamlardan oluşmalıdır.",
+      });
+    }
+    if (inputValue.length > 3) {
+      setFormErrors({
+        ...formErrors,
+        numberOfSingleHouse:
+          "Konut Sayısı alanı en fazla üç rakamdan oluşmalıdır.",
+      });
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -159,7 +311,7 @@ const handleNumberOfFlatsChange = (event) => {
           </Typography>
           <form onSubmit={handleSubmit}>
             <Stack direction="column" spacing={3}>
-            <FormControl
+              <FormControl
                 required
                 sx={{ m: 1, minWidth: 350, marginTop: "25px" }}
               >
@@ -177,7 +329,9 @@ const handleNumberOfFlatsChange = (event) => {
                   onChange={handleChangeForHousingTypes}
                   error={Boolean(formErrors.housingTypes)}
                   helperText={formErrors.housingTypes || " "}
-                  onFocus={() => setFormErrors({ ...formErrors, housingTypes: "" })}
+                  onFocus={() =>
+                    setFormErrors({ ...formErrors, housingTypes: "" })
+                  }
                   onBlur={() => {
                     if (!housingTypes) {
                       setFormErrors({
@@ -191,7 +345,10 @@ const handleNumberOfFlatsChange = (event) => {
                     <em>Lütfen konut tipini seçiniz.</em>
                   </MenuItem>
                   {housingTypesList.map((housingTypesItem) => (
-                    <MenuItem key={housingTypesItem.id} value={housingTypesItem.id}>
+                    <MenuItem
+                      key={housingTypesItem.id}
+                      value={housingTypesItem.id}
+                    >
                       {housingTypesItem.housingTypes}
                     </MenuItem>
                   ))}
@@ -249,9 +406,11 @@ const handleNumberOfFlatsChange = (event) => {
                   İl alanı zorunludur.
                 </FormHelperText>
               </FormControl>
-              
+
               <FormControl required sx={{ m: 1, minWidth: 350 }}>
-                <InputLabel id="demo-simple-select-required-label">İlçe</InputLabel>
+                <InputLabel id="demo-simple-select-required-label">
+                  İlçe
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-required-label"
                   id="demo-simple-select-required"
@@ -270,45 +429,133 @@ const handleNumberOfFlatsChange = (event) => {
                 </Select>
               </FormControl>
               <TextField
-            required
-            sx={{ m: 1, minWidth: 350 }}
-            error={Boolean(formErrors.address)}
-            helperText={formErrors.address || " "}
-            id="demo-helper-text-misaligned"
-            label="Adres"
-            value={address}
-            onChange={handleAddressChange}
-            autoComplete="off"
-            inputProps={{
-              maxLength: 200,
-            }}
-          />
-           <TextField
-            required
-            sx={{ m: 1, minWidth: 350 }}
-            error={Boolean(formErrors.apartmentName)}
-            helperText={formErrors.apartmentName || " "}
-            id="demo-helper-text-misaligned"
-            label="Apartman Adı"
-            value={apartmentName}
-            onChange={handleApartmentNameChange}
-            autoComplete="off"
-            inputProps={{
-              maxLength: 50,
-            }}
-          />
-          <TextField
-            required
-            sx={{ m: 1, minWidth: 350 }}
-            error={Boolean(formErrors.numberOfFlats)}
-            helperText={formErrors.numberOfFlats || " "}
-            id="demo-helper-text-misaligned"
-            label="Daire Sayısı"
-            value={numberOfFlats}
-            onChange={handleNumberOfFlatsChange}
-            autoComplete="off"
-          />
-            
+                required
+                sx={{ m: 1, minWidth: 350 }}
+                error={Boolean(formErrors.address)}
+                helperText={formErrors.address || " "}
+                id="demo-helper-text-misaligned"
+                label="Adres"
+                value={address}
+                onChange={handleAddressChange}
+                autoComplete="off"
+                inputProps={{
+                  maxLength: 200,
+                }}
+              />
+              {housingTypes === 1 && (
+                <>
+                  <TextField
+                    required
+                    sx={{ m: 1, minWidth: 350 }}
+                    error={Boolean(formErrors.apartmentName)}
+                    helperText={formErrors.apartmentName || " "}
+                    id="demo-helper-text-misaligned"
+                    label="Apartman Adı"
+                    value={apartmentName}
+                    onChange={handleApartmentNameChange}
+                    autoComplete="off"
+                    inputProps={{
+                      maxLength: 50,
+                    }}
+                  />
+                  <TextField
+                    required
+                    sx={{ m: 1, minWidth: 350 }}
+                    error={Boolean(formErrors.numberOfFlats)}
+                    helperText={formErrors.numberOfFlats || " "}
+                    id="demo-helper-text-misaligned"
+                    label="Daire Sayısı"
+                    value={numberOfFlats}
+                    onChange={handleNumberOfFlatsChange}
+                    autoComplete="off"
+                  />
+                </>
+              )}
+              {housingTypes === 2 && (
+                <>
+                  <TextField
+                    required
+                    sx={{ m: 1, minWidth: 350 }}
+                    error={Boolean(formErrors.siteApartmentName)}
+                    helperText={formErrors.siteApartmentName || " "}
+                    id="demo-helper-text-misaligned"
+                    label="Site Adı"
+                    value={siteApartmentName}
+                    onChange={handleSiteApartmentNameChange}
+                    autoComplete="off"
+                    inputProps={{
+                      maxLength: 50,
+                    }}
+                  />
+                  <TextField
+                    required
+                    sx={{ m: 1, minWidth: 350 }}
+                    error={Boolean(formErrors.numberOfBlocks)}
+                    helperText={formErrors.numberOfBlocks || " "}
+                    id="demo-helper-text-misaligned"
+                    label="Blok Sayısı"
+                    value={numberOfBlocks}
+                    onChange={handleNumberOfBlocksChange}
+                    autoComplete="off"
+                  />
+
+                  <TextField
+                    required
+                    sx={{ m: 1, minWidth: 350 }}
+                    error={Boolean(formErrors.blockName)}
+                    helperText={formErrors.blockName || " "}
+                    id="demo-helper-text-misaligned"
+                    label="Blok Adı"
+                    value={blockName}
+                    onChange={handleBlockNameChange}
+                    autoComplete="off"
+                    inputProps={{
+                      maxLength: 50,
+                    }}
+                  />
+
+                  <TextField
+                    required
+                    sx={{ m: 1, minWidth: 350 }}
+                    error={Boolean(formErrors.numberOfFlatsForBlock)}
+                    helperText={formErrors.numberOfFlatsForBlock || " "}
+                    id="demo-helper-text-misaligned"
+                    label="Daire Sayısı"
+                    value={numberOfFlatsForBlock}
+                    onChange={handleNumberOfFlatsForBlockChange}
+                    autoComplete="off"
+                  />
+                </>
+              )}
+              {housingTypes === 3 && (
+                <>
+                  <TextField
+                    required
+                    sx={{ m: 1, minWidth: 350 }}
+                    error={Boolean(formErrors.siteSingleHouseName)}
+                    helperText={formErrors.siteSingleHouseName || " "}
+                    id="demo-helper-text-misaligned"
+                    label="Site Adı"
+                    value={siteSingleHouseName}
+                    onChange={handleSiteSingleHouseNameChange}
+                    autoComplete="off"
+                    inputProps={{
+                      maxLength: 50,
+                    }}
+                  />
+                  <TextField
+                    required
+                    sx={{ m: 1, minWidth: 350 }}
+                    error={Boolean(formErrors.numberOfSingleHouse)}
+                    helperText={formErrors.numberOfSingleHouse || " "}
+                    id="demo-helper-text-misaligned"
+                    label="Konut Sayısı"
+                    value={numberOfSingleHouse}
+                    onChange={handleNumberOfSingleHouseChange}
+                    autoComplete="off"
+                  />
+                </>
+              )}
               <Button
                 variant="contained"
                 sx={{ m: 1, minWidth: 350, textTransform: "none" }}
