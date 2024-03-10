@@ -220,16 +220,16 @@ export default function AddManagement() {
 
   const handleBlocksChange = (index, field, value) => {
     const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
-    const onlyNumbers = /^\d{0,3}$/;
+    const onlyNumbers = /^\d*$/; 
   
     const updatedBlocks = [...blocks];
-    updatedBlocks[index][field] = value;
+    updatedBlocks[index][field] = field === 'blockName' ? (onlyLetters.test(value) ? value : '') : (onlyNumbers.test(value) ? value : ''); // Alanın gereksinimlerine göre değeri ayarla
     setBlocks(updatedBlocks);
   
     if (field === 'blockName') {
       if (!value) {
         setFormErrors({ ...formErrors, [`blockName${index}`]: "Blok Adı alanı zorunludur." });
-      } else if (!onlyLetters.test(value)) {
+      } else if (!onlyLetters.test(value)) { 
         setFormErrors({ ...formErrors, [`blockName${index}`]: "Blok Adı harflerden oluşmalıdır." });
       } else {
         setFormErrors({ ...formErrors, [`blockName${index}`]: "" });
@@ -237,7 +237,7 @@ export default function AddManagement() {
     } else if (field === 'numberOfFlatsForBlock') {
       if (!value) {
         setFormErrors({ ...formErrors, [`numberOfFlatsForBlock${index}`]: "Daire Sayısı alanı zorunludur." });
-      } else if (!onlyNumbers.test(value)) {
+      } else if (!onlyNumbers.test(value)) { 
         setFormErrors({ ...formErrors, [`numberOfFlatsForBlock${index}`]: "Daire sayısı alanı sadece rakamlardan oluşmalıdır." });
       } else if (value.length > 3) {
         setFormErrors({ ...formErrors, [`numberOfFlatsForBlock${index}`]: "Daire Sayısı alanı en fazla 3 karakterden oluşmalıdır." });
@@ -245,8 +245,7 @@ export default function AddManagement() {
         setFormErrors({ ...formErrors, [`numberOfFlatsForBlock${index}`]: "" });
       }
     }
-  };
-  
+};
 
   const handleBlockCountChange = (event) => {
     const inputValue = event.target.value;
