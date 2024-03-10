@@ -17,8 +17,17 @@ import axiosInstance from "../services/axiosInstance";
 
 export default function AddManagement() {
   const [formData, setFormData] = useState({
-    id: "",
-    informationManagementSelect: "",
+    housingTypes: "",
+    city: "",
+    country: "",
+    address: "",
+    apartmentName: "",
+    numberOfFlats: "",
+    siteApartmentName: "",
+    siteSingleHouseName: "",
+    numberOfSingleHouse: "",
+    blockCount: "",
+    blocks: "",
   });
   const [formErrors, setFormErrors] = useState({});
   const [housingTypes, setHousingTypes] = useState("");
@@ -275,7 +284,35 @@ export default function AddManagement() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Burada ilçe bilgisini de formData'ya ekleyebilirsiniz
+    const formDataToSend = {
+      housingTypes: housingTypes,
+      city: city,
+      country: country,
+      address: address,
+      apartmentName: apartmentName,
+      numberOfFlats: numberOfFlats,
+      siteApartmentName: siteApartmentName,
+      siteSingleHouseName: siteSingleHouseName,
+      numberOfSingleHouse: numberOfSingleHouse,
+      blockCount: blockCount,
+      blocks: blocks
+    };
+
+    const apiUrl = "/user/management-add";
+    axiosInstance
+      .post(apiUrl,formDataToSend)
+      .then((response) => {
+        console.log("Response from the server:", response.data);
+
+        const { message, status } = response.data;
+        if (status === 1) {
+          console.log(message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
   };
 
   return (
