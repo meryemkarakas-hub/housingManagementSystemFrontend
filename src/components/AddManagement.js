@@ -37,6 +37,11 @@ export default function AddManagement() {
   const [numberOfFlatsForBlock, setNumberOfFlatsForBlock] = useState("");
   const [siteSingleHouseName, setSiteSingleHouseName] = useState("");
   const [numberOfSingleHouse, setNumberOfSingleHouse] = useState("");
+  const [blockCount, setBlockCount] = useState("");
+  const [blocks, setBlocks] = useState([]);
+
+
+
 
   const handleChangeForHousingTypes = (event) => {
     setHousingTypes(event.target.value);
@@ -284,6 +289,27 @@ export default function AddManagement() {
     }
   };
 
+  const handleBlocksChange = (index, field, value) => {
+    const newBlocks = [...blocks];
+    newBlocks[index][field] = value;
+    setBlocks(newBlocks);
+  };
+
+  const handleBlockCountChange = (event) => {
+    const inputValue = event.target.value;
+    setBlockCount(inputValue);
+    setFormErrors({ ...formErrors, blockCount: "" });
+    if (inputValue === "") {
+      setFormErrors({ ...formErrors, blockCount: "Blok Sayısı alanı zorunludur." });
+    } else {
+      const newBlocks = [];
+      for (let i = 0; i < inputValue; i++) {
+        newBlocks.push({ blockName: "", numberOfFlatsForBlock: "" });
+      }
+      setBlocks(newBlocks);
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     // Burada ilçe bilgisini de formData'ya ekleyebilirsiniz
@@ -490,41 +516,47 @@ export default function AddManagement() {
                   <TextField
                     required
                     sx={{ m: 1, minWidth: 350 }}
-                    error={Boolean(formErrors.numberOfBlocks)}
-                    helperText={formErrors.numberOfBlocks || " "}
+                    error={Boolean(formErrors.blockCount)}
+                    helperText={formErrors.blockCount || " "}
                     id="demo-helper-text-misaligned"
                     label="Blok Sayısı"
-                    value={numberOfBlocks}
-                    onChange={handleNumberOfBlocksChange}
+                    value={blockCount}
+                    onChange={handleBlockCountChange}
                     autoComplete="off"
                   />
-
-                  <TextField
-                    required
-                    sx={{ m: 1, minWidth: 350 }}
-                    error={Boolean(formErrors.blockName)}
-                    helperText={formErrors.blockName || " "}
-                    id="demo-helper-text-misaligned"
-                    label="Blok Adı"
-                    value={blockName}
-                    onChange={handleBlockNameChange}
-                    autoComplete="off"
-                    inputProps={{
-                      maxLength: 50,
-                    }}
-                  />
-
-                  <TextField
-                    required
-                    sx={{ m: 1, minWidth: 350 }}
-                    error={Boolean(formErrors.numberOfFlatsForBlock)}
-                    helperText={formErrors.numberOfFlatsForBlock || " "}
-                    id="demo-helper-text-misaligned"
-                    label="Daire Sayısı"
-                    value={numberOfFlatsForBlock}
-                    onChange={handleNumberOfFlatsForBlockChange}
-                    autoComplete="off"
-                  />
+                  {blocks.map((block, index) => (
+                    <React.Fragment key={index}>
+                      <TextField
+                        required
+                        sx={{ m: 1, minWidth: 350 }}
+                        error={Boolean(formErrors[`blockName${index}`])}
+                        helperText={formErrors[`blockName${index}`] || " "}
+                        id={`block-name-${index}`}
+                        label={`Blok Adı ${index + 1}`}
+                        value={block.blockName}
+                        onChange={(event) =>
+                          handleBlocksChange(index, "blockName", event.target.value)
+                        }
+                        autoComplete="off"
+                        inputProps={{
+                          maxLength: 50,
+                        }}
+                      />
+                      <TextField
+                        required
+                        sx={{ m: 1, minWidth: 350 }}
+                        error={Boolean(formErrors[`numberOfFlatsForBlock${index}`])}
+                        helperText={formErrors[`numberOfFlatsForBlock${index}`] || " "}
+                        id={`number-of-flats-for-block-${index}`}
+                        label={`Daire Sayısı ${index + 1}`}
+                        value={block.numberOfFlatsForBlock}
+                        onChange={(event) =>
+                          handleBlocksChange(index, "numberOfFlatsForBlock", event.target.value)
+                        }
+                        autoComplete="off"
+                      />
+                    </React.Fragment>
+                  ))}
                 </>
               )}
               {housingTypes === 3 && (
