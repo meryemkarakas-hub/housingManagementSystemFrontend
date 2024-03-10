@@ -12,7 +12,6 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosInstance";
 
@@ -31,17 +30,11 @@ export default function AddManagement() {
   const [address, setAddress] = useState("");
   const [apartmentName, setApartmentName] = useState("");
   const [numberOfFlats, setNumberOfFlats] = useState("");
-  const [numberOfBlocks, setNumberOfBlocks] = useState("");
   const [siteApartmentName, setSiteApartmentName] = useState("");
-  const [blockName, setBlockName] = useState("");
-  const [numberOfFlatsForBlock, setNumberOfFlatsForBlock] = useState("");
   const [siteSingleHouseName, setSiteSingleHouseName] = useState("");
   const [numberOfSingleHouse, setNumberOfSingleHouse] = useState("");
   const [blockCount, setBlockCount] = useState("");
   const [blocks, setBlocks] = useState([]);
-
-
-
 
   const handleChangeForHousingTypes = (event) => {
     setHousingTypes(event.target.value);
@@ -61,8 +54,8 @@ export default function AddManagement() {
   const handleChangeForCity = (event) => {
     const selectedCity = event.target.value;
     setCity(selectedCity);
-    setCountry(""); // İl değiştiğinde ilçe bilgisini sıfırla
-    fetchCountry(selectedCity); // Seçilen ile göre ilçeleri getir
+    setCountry("");
+    fetchCountry(selectedCity);
   };
 
   const handleChangeForCountry = (event) => {
@@ -125,7 +118,7 @@ export default function AddManagement() {
 
   const handleNumberOfFlatsChange = (event) => {
     const inputValue = event.target.value;
-    const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
+    const onlyNumbers = /^\d{0,3}$/;
     if (inputValue === "") {
       setNumberOfFlats("");
       setFormErrors({
@@ -169,79 +162,6 @@ export default function AddManagement() {
     }
   };
 
-  const handleNumberOfBlocksChange = (event) => {
-    const inputValue = event.target.value;
-    const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
-    if (inputValue === "") {
-      setNumberOfBlocks("");
-      setFormErrors({
-        ...formErrors,
-        numberOfBlocks: "Blok Sayısı alanı zorunludur.",
-      });
-    } else if (onlyNumbers.test(inputValue)) {
-      setNumberOfBlocks(inputValue);
-      setFormErrors({ ...formErrors, numberOfBlocks: "" });
-    } else {
-      setFormErrors({
-        ...formErrors,
-        numberOfBlocks: "Blok Sayısı alanı rakamlardan oluşmalıdır.",
-      });
-    }
-    if (inputValue.length > 3) {
-      setFormErrors({
-        ...formErrors,
-        numberOfBlocks: "Blok Sayısı alanı en fazla üç rakamdan oluşmalıdır.",
-      });
-    }
-  };
-
-  const handleBlockNameChange = (event) => {
-    const inputValue = event.target.value;
-    const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
-    if (onlyLetters.test(inputValue) || inputValue === "") {
-      setBlockName(inputValue);
-      setFormErrors({ ...formErrors, blockName: "" });
-    } else {
-      setFormErrors({
-        ...formErrors,
-        blockName: "Blok Adı alanı sadece harflerden oluşmalıdır.",
-      });
-    }
-    if (inputValue === "") {
-      setFormErrors({
-        ...formErrors,
-        blockName: "Blok Adı alanı zorunludur.",
-      });
-    }
-  };
-
-  const handleNumberOfFlatsForBlockChange = (event) => {
-    const inputValue = event.target.value;
-    const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
-    if (inputValue === "") {
-      setNumberOfFlatsForBlock("");
-      setFormErrors({
-        ...formErrors,
-        numberOfFlatsForBlock: "Daire Sayısı alanı zorunludur.",
-      });
-    } else if (onlyNumbers.test(inputValue)) {
-      setNumberOfFlatsForBlock(inputValue);
-      setFormErrors({ ...formErrors, numberOfFlatsForBlock: "" });
-    } else {
-      setFormErrors({
-        ...formErrors,
-        numberOfFlatsForBlock: "Daire Sayısı alanı rakamlardan oluşmalıdır.",
-      });
-    }
-    if (inputValue.length > 3) {
-      setFormErrors({
-        ...formErrors,
-        numberOfFlatsForBlock:
-          "Daire Sayısı alanı en fazla üç rakamdan oluşmalıdır.",
-      });
-    }
-  };
-
   const handleSiteSingleHouseNameChange = (event) => {
     const inputValue = event.target.value;
     const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
@@ -264,7 +184,7 @@ export default function AddManagement() {
 
   const handleNumberOfSingleHouseChange = (event) => {
     const inputValue = event.target.value;
-    const onlyNumbers = /^\d{0,3}$/; // Sadece rakamlar ve en fazla üç karakter
+    const onlyNumbers = /^\d{0,3}$/;
     if (inputValue === "") {
       setNumberOfSingleHouse("");
       setFormErrors({
@@ -297,16 +217,35 @@ export default function AddManagement() {
 
   const handleBlockCountChange = (event) => {
     const inputValue = event.target.value;
-    setBlockCount(inputValue);
-    setFormErrors({ ...formErrors, blockCount: "" });
+    const onlyNumbers = /^\d{0,3}$/;
+
     if (inputValue === "") {
-      setFormErrors({ ...formErrors, blockCount: "Blok Sayısı alanı zorunludur." });
-    } else {
-      const newBlocks = [];
-      for (let i = 0; i < inputValue; i++) {
-        newBlocks.push({ blockName: "", numberOfFlatsForBlock: "" });
+      setBlockCount("");
+      setFormErrors({
+        ...formErrors,
+        blockCount: "Blok Sayısı alanı zorunludur.",
+      });
+    } else if (onlyNumbers.test(inputValue)) {
+      setBlockCount(inputValue);
+      setFormErrors({ ...formErrors, blockCount: "" });
+
+      if (inputValue.length > 3) {
+        setFormErrors({
+          ...formErrors,
+          blockCount: "Blok Sayısı sadece 3 rakamdan oluşmalıdır.",
+        });
+      } else {
+        const newBlocks = [];
+        for (let i = 0; i < inputValue; i++) {
+          newBlocks.push({ blockName: "", numberOfFlatsForBlock: "" });
+        }
+        setBlocks(newBlocks);
       }
-      setBlocks(newBlocks);
+    } else {
+      setFormErrors({
+        ...formErrors,
+        blockCount: "Blok Sayısı alanı sadece rakamlardan oluşmalıdır.",
+      });
     }
   };
 
@@ -535,7 +474,11 @@ export default function AddManagement() {
                         label={`Blok Adı ${index + 1}`}
                         value={block.blockName}
                         onChange={(event) =>
-                          handleBlocksChange(index, "blockName", event.target.value)
+                          handleBlocksChange(
+                            index,
+                            "blockName",
+                            event.target.value
+                          )
                         }
                         autoComplete="off"
                         inputProps={{
@@ -545,13 +488,21 @@ export default function AddManagement() {
                       <TextField
                         required
                         sx={{ m: 1, minWidth: 350 }}
-                        error={Boolean(formErrors[`numberOfFlatsForBlock${index}`])}
-                        helperText={formErrors[`numberOfFlatsForBlock${index}`] || " "}
+                        error={Boolean(
+                          formErrors[`numberOfFlatsForBlock${index}`]
+                        )}
+                        helperText={
+                          formErrors[`numberOfFlatsForBlock${index}`] || " "
+                        }
                         id={`number-of-flats-for-block-${index}`}
                         label={`Daire Sayısı ${index + 1}`}
                         value={block.numberOfFlatsForBlock}
                         onChange={(event) =>
-                          handleBlocksChange(index, "numberOfFlatsForBlock", event.target.value)
+                          handleBlocksChange(
+                            index,
+                            "numberOfFlatsForBlock",
+                            event.target.value
+                          )
                         }
                         autoComplete="off"
                       />
