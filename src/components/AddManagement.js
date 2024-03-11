@@ -30,11 +30,11 @@ export default function AddManagement() {
     blocks: "",
   });
   const [formErrors, setFormErrors] = useState({});
-  const [housingTypes, setHousingTypes] = useState("");
+  const [housingTypes, setHousingTypes] = useState(null);
   const [housingTypesList, setHousingTypesList] = useState([]);
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState(null);
   const [cityList, setCityList] = useState([]);
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState(null);
   const [countryList, setCountryList] = useState([]);
   const [address, setAddress] = useState("");
   const [apartmentName, setApartmentName] = useState("");
@@ -362,19 +362,19 @@ export default function AddManagement() {
       blocks: blocks,
     };
     // if (validateHousingInfo()) {
-      try {
-        const apiUrl = "/user/management-add";
-        axiosInstance.post(apiUrl, formDataToSend).then((response) => {
-          console.log("Response from the server:", response.data);
+    try {
+      const apiUrl = "/user/management-add";
+      axiosInstance.post(apiUrl, formDataToSend).then((response) => {
+        console.log("Response from the server:", response.data);
 
-          const { message, status } = response.data;
-          if (status === 1) {
-            console.log(message);
-          }
-        });
-      } catch (error) {
-        console.error("Error occurred:", error);
-      }
+        const { message, status } = response.data;
+        if (status === 1) {
+          console.log(message);
+        }
+      });
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
     //}
   };
 
