@@ -220,32 +220,56 @@ export default function AddManagement() {
 
   const handleBlocksChange = (index, field, value) => {
     const onlyLetters = /^[A-Za-zğüşıöçĞÜŞİÖÇ\s]*$/;
-    const onlyNumbers = /^\d*$/; 
-  
+    const onlyNumbers = /^\d*$/;
+
     const updatedBlocks = [...blocks];
-    updatedBlocks[index][field] = field === 'blockName' ? (onlyLetters.test(value) ? value : '') : (onlyNumbers.test(value) ? value : ''); // Alanın gereksinimlerine göre değeri ayarla
+    updatedBlocks[index][field] =
+      field === "blockName"
+        ? onlyLetters.test(value)
+          ? value
+          : ""
+        : onlyNumbers.test(value)
+        ? value
+        : ""; // Alanın gereksinimlerine göre değeri ayarla
     setBlocks(updatedBlocks);
-  
-    if (field === 'blockName') {
+
+    if (field === "blockName") {
       if (!value) {
-        setFormErrors({ ...formErrors, [`blockName${index}`]: "Blok Adı alanı zorunludur." });
-      } else if (!onlyLetters.test(value)) { 
-        setFormErrors({ ...formErrors, [`blockName${index}`]: "Blok Adı harflerden oluşmalıdır." });
+        setFormErrors({
+          ...formErrors,
+          [`blockName${index}`]: "Blok Adı alanı zorunludur.",
+        });
+      } else if (!onlyLetters.test(value)) {
+        setFormErrors({
+          ...formErrors,
+          [`blockName${index}`]: "Blok Adı harflerden oluşmalıdır.",
+        });
       } else {
         setFormErrors({ ...formErrors, [`blockName${index}`]: "" });
       }
-    } else if (field === 'numberOfFlatsForBlock') {
+    } else if (field === "numberOfFlatsForBlock") {
       if (!value) {
-        setFormErrors({ ...formErrors, [`numberOfFlatsForBlock${index}`]: "Daire Sayısı alanı zorunludur." });
-      } else if (!onlyNumbers.test(value)) { 
-        setFormErrors({ ...formErrors, [`numberOfFlatsForBlock${index}`]: "Daire sayısı alanı sadece rakamlardan oluşmalıdır." });
+        setFormErrors({
+          ...formErrors,
+          [`numberOfFlatsForBlock${index}`]: "Daire Sayısı alanı zorunludur.",
+        });
+      } else if (!onlyNumbers.test(value)) {
+        setFormErrors({
+          ...formErrors,
+          [`numberOfFlatsForBlock${index}`]:
+            "Daire sayısı alanı sadece rakamlardan oluşmalıdır.",
+        });
       } else if (value.length > 3) {
-        setFormErrors({ ...formErrors, [`numberOfFlatsForBlock${index}`]: "Daire Sayısı alanı en fazla 3 karakterden oluşmalıdır." });
+        setFormErrors({
+          ...formErrors,
+          [`numberOfFlatsForBlock${index}`]:
+            "Daire Sayısı alanı en fazla 3 karakterden oluşmalıdır.",
+        });
       } else {
         setFormErrors({ ...formErrors, [`numberOfFlatsForBlock${index}`]: "" });
       }
     }
-};
+  };
 
   const handleBlockCountChange = (event) => {
     const inputValue = event.target.value;
@@ -281,6 +305,45 @@ export default function AddManagement() {
     }
   };
 
+  const validateHousingInfo = () => {
+    const errors = {};
+
+    const requiredFields = {
+      housingTypes: "Konut Tipi",
+      city: "İl",
+      country: "İlçe",
+      address: "Adres",
+      apartmentName: "Apartman Adı",
+      numberOfFlats: "Daire Sayısı",
+      siteApartmentName: "Site Adı",
+      siteSingleHouseName: "Konut Adı",
+      numberOfSingleHouse: "Konut Sayısı",
+      blockCount: "Blok Sayısı",
+      blocks: "Blok",
+    };
+
+    const checkField = (field, fieldName) => {
+      if (!field) {
+        errors[fieldName] = `${requiredFields[fieldName]} alanı zorunludur.`;
+      }
+    };
+
+    checkField(housingTypes, "housingTypes");
+    checkField(city, "city");
+    checkField(country, "country");
+    checkField(address, "address");
+    checkField(apartmentName, "apartmentName");
+    checkField(numberOfFlats, "numberOfFlats");
+    checkField(siteApartmentName, "siteApartmentName");
+    checkField(siteSingleHouseName, "siteSingleHouseName");
+    checkField(numberOfSingleHouse, "numberOfSingleHouse");
+    checkField(blockCount, "blockCount");
+    checkField(blocks, "blocks");
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const formDataToSend = {
@@ -294,24 +357,23 @@ export default function AddManagement() {
       siteSingleHouseName: siteSingleHouseName,
       numberOfSingleHouse: numberOfSingleHouse,
       blockCount: blockCount,
-      blocks: blocks
+      blocks: blocks,
     };
+    if (validateHousingInfo()) {
+      try {
+        const apiUrl = "/user/management-add";
+        axiosInstance.post(apiUrl, formDataToSend).then((response) => {
+          console.log("Response from the server:", response.data);
 
-    const apiUrl = "/user/management-add";
-    axiosInstance
-      .post(apiUrl,formDataToSend)
-      .then((response) => {
-        console.log("Response from the server:", response.data);
-
-        const { message, status } = response.data;
-        if (status === 1) {
-          console.log(message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-
+          const { message, status } = response.data;
+          if (status === 1) {
+            console.log(message);
+          }
+        });
+      } catch (error) {
+        console.error("Error occurred:", error);
+      }
+    }
   };
 
   return (
