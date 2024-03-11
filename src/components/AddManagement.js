@@ -37,10 +37,10 @@ export default function AddManagement() {
   const [country, setCountry] = useState(null);
   const [countryList, setCountryList] = useState([]);
   const [address, setAddress] = useState("");
-  const [apartmentName, setApartmentName] = useState("");
+  const [apartmentName, setApartmentName] = useState(null);
   const [numberOfFlats, setNumberOfFlats] = useState("");
-  const [siteApartmentName, setSiteApartmentName] = useState("");
-  const [siteSingleHouseName, setSiteSingleHouseName] = useState("");
+  const [siteApartmentName, setSiteApartmentName] = useState(null);
+  const [siteSingleHouseName, setSiteSingleHouseName] = useState(null);
   const [numberOfSingleHouse, setNumberOfSingleHouse] = useState("");
   const [blockCount, setBlockCount] = useState("");
   const [blocks, setBlocks] = useState([]);
