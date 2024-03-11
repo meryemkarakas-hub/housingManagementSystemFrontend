@@ -11,11 +11,29 @@ import {
   FormHelperText,
   Select,
   TextField,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 export default function AddManagement() {
+  const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message, status) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status === 0 ? "error" : "success");
+    setSnackbarOpen(true);
+  };
+
   const [formData, setFormData] = useState({
     housingTypes: "",
     city: "",
@@ -48,6 +66,7 @@ export default function AddManagement() {
   const handleChangeForHousingTypes = (event) => {
     setHousingTypes(event.target.value);
   };
+
 
   useEffect(() => {
     axiosInstance
@@ -366,11 +385,15 @@ export default function AddManagement() {
       const apiUrl = "/user/management-add";
       axiosInstance.post(apiUrl, formDataToSend).then((response) => {
         console.log("Response from the server:", response.data);
-
         const { message, status } = response.data;
         if (status === 1) {
           console.log(message);
+          showSnackbar(message, 1);
+          setTimeout(() => {
+            navigate("/menu");
+          }, 6000);
         }
+        
       });
     } catch (error) {
       console.error("Error occurred:", error);
@@ -379,6 +402,17 @@ export default function AddManagement() {
   };
 
   return (
+    <>
+    <Snackbar
+    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+    open={snackbarOpen}
+    autoHideDuration={6000}
+    onClose={handleSnackbarClose}
+  >
+    <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+      {snackbarMessage}
+    </Alert>
+  </Snackbar>
     <Container
       maxWidth="sm"
       sx={{
@@ -696,5 +730,6 @@ export default function AddManagement() {
         </Box>
       </Paper>
     </Container>
+    </>
   );
 }
