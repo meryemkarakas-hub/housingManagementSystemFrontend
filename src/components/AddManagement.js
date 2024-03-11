@@ -229,7 +229,9 @@ export default function AddManagement() {
           ? value
           : ""
         : onlyNumbers.test(value)
-        ? value
+        ? value.length <= 3
+          ? value
+          : value.slice(0, 3)
         : "";
     setBlocks(updatedBlocks);
 
