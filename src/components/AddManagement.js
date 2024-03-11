@@ -495,15 +495,29 @@ export default function AddManagement() {
               </FormControl>
 
               <FormControl required sx={{ m: 1, minWidth: 350 }}>
-                <InputLabel id="demo-simple-select-required-label">
+                <InputLabel
+                  id="demo-simple-select-required-label-country"
+                  style={{ color: formErrors.country ? "#dc143c" : "" }}
+                >
                   İlçe
                 </InputLabel>
                 <Select
-                  labelId="demo-simple-select-required-label"
-                  id="demo-simple-select-required"
+                  labelId="demo-simple-select-required-label-country"
+                  id="demo-simple-select-required-country"
                   value={country}
                   label="İlçe"
                   onChange={handleChangeForCountry}
+                  error={Boolean(formErrors.country)}
+                  helperText={formErrors.country || " "}
+                  onFocus={() => setFormErrors({ ...formErrors, country: "" })}
+                  onBlur={() => {
+                    if (!country) {
+                      setFormErrors({
+                        ...formErrors,
+                        country: "İlçe alanı zorunludur.",
+                      });
+                    }
+                  }}
                 >
                   <MenuItem value="">
                     <em>Lütfen ilçeyi seçiniz.</em>
@@ -514,6 +528,13 @@ export default function AddManagement() {
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText
+                  style={{
+                    color: formErrors.country ? "#dc143c" : "transparent",
+                  }}
+                >
+                  İlçe alanı zorunludur.
+                </FormHelperText>
               </FormControl>
               <TextField
                 required
