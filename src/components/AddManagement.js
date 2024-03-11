@@ -361,7 +361,7 @@ export default function AddManagement() {
       blockCount: blockCount,
       blocks: blocks,
     };
-    if (validateHousingInfo()) {
+    // if (validateHousingInfo()) {
       try {
         const apiUrl = "/user/management-add";
         axiosInstance.post(apiUrl, formDataToSend).then((response) => {
@@ -375,7 +375,7 @@ export default function AddManagement() {
       } catch (error) {
         console.error("Error occurred:", error);
       }
-    }
+    //}
   };
 
   return (
