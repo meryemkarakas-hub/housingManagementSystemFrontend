@@ -230,7 +230,7 @@ export default function AddManagement() {
           : ""
         : onlyNumbers.test(value)
         ? value
-        : ""; // Alanın gereksinimlerine göre değeri ayarla
+        : "";
     setBlocks(updatedBlocks);
 
     if (field === "blockName") {
