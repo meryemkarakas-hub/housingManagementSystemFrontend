@@ -4,13 +4,9 @@ import {
   Alert,
   Box,
   Checkbox,
-  FormControl,
-  FormHelperText,
   IconButton,
   InputAdornment,
-  InputLabel,
   Link,
-  OutlinedInput,
   Paper,
   Snackbar,
   TextField,
@@ -28,8 +24,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [identityNumber, setIdentityNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [identityError, setIdentityError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const dispatch = useDispatch();
   const { message } = useSelector((state) => state.message);
 
@@ -39,18 +34,54 @@ const Login = () => {
     event.preventDefault();
   };
 
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword.slice(0, 16));
-    setPasswordError(false);
+  const handleIdentityNumberChange = (event) => {
+    let inputValue = event.target.value.trim();
+    const onlyDigits = /^\d*$/;
+    if (onlyDigits.test(inputValue)) {
+      if (inputValue.length === 11) {
+        setIdentityNumber(inputValue);
+        setFormErrors({ ...formErrors, identityNumber: "" });
+      } else {
+        setIdentityNumber(inputValue);
+        setFormErrors({
+          ...formErrors,
+          identityNumber: "TC Kimlik Numarası 11 haneli olmalıdır.",
+        });
+      }
+    } else {
+      setFormErrors({
+        ...formErrors,
+        identityNumber: "TC Kimlik Numarası alanı sadece rakam içermelidir.",
+      });
+    }
   };
 
-  const handleIdentityNumberChange = (e) => {
-    const value = e.target.value;
-    if (/^\d{0,11}$/.test(value)) {
-      setIdentityNumber(value);
-      setIdentityError(false);
-    }
+  const handlePasswordChange = (event) => {
+    const inputValue = event.target.value;
+    setPassword(inputValue.slice(0, 16));
+    if (inputValue.length === 1 ) {
+      setFormErrors({ ...formErrors, password: "" });
+    } 
+  };
+
+  const validateUserInfo = () => {
+    const errors = {};
+
+    const requiredFields = {
+      identityNumber: "TC kimlik numarası",
+      password: "Şifre",
+    };
+
+    const checkField = (field, fieldName) => {
+      if (!field) {
+        errors[fieldName] = `${requiredFields[fieldName]} alanı zorunludur.`;
+      }
+    };
+
+    checkField(identityNumber, "identityNumber");
+    checkField(password, "password");
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -68,49 +99,32 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
-    if (!identityNumber && !password) {
-      setIdentityError(true);
-      setPasswordError(true);
-      return;
-    } else if (!identityNumber) {
-      setIdentityError(true);
-      return;
-    } else if (!password) {
-      setPasswordError(true);
-      return;
-    } else if (identityNumber.length !== 11) {
-      setIdentityError(true);
-      showSnackbar("TC kimlik numaranız 11 haneden oluşmalıdır.", 0);
-      return;
-    }
+    if (validateUserInfo()) {
+      try {
+        // const data=authService.login(identityNumber,password);
 
-    setIdentityError(false);
-    setPasswordError(false);
+        // const { message, status } = data;
+        dispatch(login(identityNumber, password))
+          .then(() => {
+            navigate("/select-management");
+            // navigate("/dashboard");
+            window.location.reload();
+          })
+          .catch((error) => {
+            showSnackbar(message, 0);
+          });
 
-    try {
-      // const data=authService.login(identityNumber,password);
-
-      // const { message, status } = data;
-      dispatch(login(identityNumber, password))
-        .then(() => {
-          navigate("/select-management");
-          // navigate("/dashboard");
-          window.location.reload();
-        })
-        .catch((error) => {
-          showSnackbar(message, 0);
-        });
-
-      // if (status === 1) {
-      //   console.log(message);
-      //   showSnackbar(message, 1);
-      // } else {
-      //   console.error(message);
-      //   showSnackbar(message, 0);
-      // }
-    } catch (error) {
-      console.error("Error occurred:", error);
-      showSnackbar("Giriş yapılırken bir hata oluştu.", 0);
+        // if (status === 1) {
+        //   console.log(message);
+        //   showSnackbar(message, 1);
+        // } else {
+        //   console.error(message);
+        //   showSnackbar(message, 0);
+        // }
+      } catch (error) {
+        console.error("Error occurred:", error);
+        showSnackbar("Giriş yapılırken bir hata oluştu.", 0);
+      }
     }
   };
 
@@ -161,28 +175,31 @@ const Login = () => {
           <TextField
             required
             sx={{ m: 1, minWidth: 350 }}
-            helperText={
-              identityError ? "TC kimlik numarası alanı zorunludur." : ""
-            }
-            error={identityError}
+            error={Boolean(formErrors.identityNumber)}
+            helperText={formErrors.identityNumber || " "}
             id="demo-helper-text-misaligned"
             label="TC Kimlik Numarası"
             value={identityNumber}
             onChange={handleIdentityNumberChange}
             autoComplete="off"
+            inputProps={{
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+              maxLength: 11,
+            }}
           />
-          <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
-            <InputLabel
-              htmlFor="outlined-adornment-password"
-              style={{ color: passwordError ? "#dc143c" : "#616161" }}
-            >
-              Şifre *
-            </InputLabel>
-            <OutlinedInput
-              required
-              id="outlined-adornment-password"
-              type={showPassword ? "text" : "password"}
-              endAdornment={
+          <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.password)}
+            helperText={formErrors.password || " "}
+            id="outlined-adornment-password"
+            label="Şifre"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={handlePasswordChange}
+            InputProps={{
+              endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
@@ -193,20 +210,11 @@ const Login = () => {
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              }
-              label="Şifre"
-              value={password}
-              onChange={handlePasswordChange}
-              error={passwordError}
-              inputProps={{
-                style: { color: "gray" },
-              }}
-              autoComplete="off"
-            />
-            <FormHelperText error={passwordError}>
-              {passwordError ? "Şifre alanı zorunludur." : ""}
-            </FormHelperText>
-          </FormControl>
+              ),
+            }}
+            autoComplete="off"
+            variant="outlined"
+          />
           <Checkbox />
           <span
             style={{ color: "gray", marginLeft: "5px", marginRight: "100px" }}
@@ -242,5 +250,4 @@ const Login = () => {
     </>
   );
 };
-
 export default Login;

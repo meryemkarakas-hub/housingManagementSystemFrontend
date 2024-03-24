@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Alert,
   Box,
-  FormControl,
-  FormHelperText,
   IconButton,
   InputAdornment,
-  InputLabel,
-  OutlinedInput,
   Paper,
   Snackbar,
   TextField,
@@ -20,55 +16,55 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 
 const Activation = () => {
-  const [formData, setFormData] = useState({
-    identityNumber: "",
-    password: "",
-    rePassword: "",
-  });
-
+  const [identityNumber, setIdentityNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
+  const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showRepassword, setShowRepassword] = useState(false);
-  const [identityError, setIdentityError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [repasswordError, setRepasswordError] = useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleClickShowRepassword = () => setShowRepassword((show) => !show);
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
   const handleMouseDownRepassword = (event) => {
     event.preventDefault();
   };
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      password: newPassword.slice(0, 16),
-    }));
-    setPasswordError(false);
+  const handlePasswordChange = (event) => {
+    const inputValue = event.target.value;
+    setPassword(inputValue.slice(0, 16));
+    if (inputValue.length === 1 ) {
+      setFormErrors({ ...formErrors, password: "" });
+    } 
   };
 
-  const handleRepasswordChange = (e) => {
-    const newRepassword = e.target.value;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      rePassword: newRepassword.slice(0, 16),
-    }));
-    setRepasswordError(false);
+  const handleRepasswordChange = (event) => {
+    const inputValue = event.target.value;
+    setRePassword(inputValue.slice(0, 16));
+    if (inputValue.length === 1 ) {
+      setFormErrors({ ...formErrors, rePassword: "" });
+    } 
   };
 
-  const handleIdentityNumberChange = (e) => {
-    const value = e.target.value;
-    if (/^\d{0,11}$/.test(value)) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        identityNumber: value,
-      }));
-      setIdentityError(false);
+  const handleIdentityNumberChange = (event) => {
+    let inputValue = event.target.value.trim();
+    const onlyDigits = /^\d*$/;
+    if (onlyDigits.test(inputValue)) {
+      if (inputValue.length === 11) {
+        setIdentityNumber(inputValue);
+        setFormErrors({ ...formErrors, identityNumber: "" });
+      } else {
+        setIdentityNumber(inputValue);
+        setFormErrors({
+          ...formErrors,
+          identityNumber: "TC Kimlik Numarası 11 haneli olmalıdır.",
+        });
+      }
+    } else {
+      setFormErrors({
+        ...formErrors,
+        identityNumber: "TC Kimlik Numarası alanı sadece rakam içermelidir.",
+      });
     }
   };
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -87,37 +83,41 @@ const Activation = () => {
 
   const navigate = useNavigate();
 
+  const validateUserInfo = () => {
+    const errors = {};
 
-  const handleSubmit = (event) => {
-    const { identityNumber, password, rePassword } = formData;
-    if (!identityNumber && !password && !rePassword) {
-      setIdentityError(true);
-      setPasswordError(true);
-      setRepasswordError(true);
-      return;
-    } else if (!identityNumber) {
-      setIdentityError(true);
-      return;
-    } else if (!password) {
-      setPasswordError(true);
-      return;
-    } else if (!rePassword) {
-      setRepasswordError(true);
-      return;
-    } else if (identityNumber.length !== 11) {
-      setIdentityError(true);
-      showSnackbar("TC kimlik numaranız 11 haneden oluşmalıdır.", 0);
-      return;
-    }
-    setIdentityError(false);
-    setPasswordError(false);
-    setRepasswordError(false);
-    event.preventDefault();
-    const apiUrl = "http://localhost:8080/api/auth/activation";
-    axios
-      .post(apiUrl, formData)
-      .then((response) => {
-        console.log("Response from the server:", response.data);
+    const requiredFields = {
+      identityNumber: "TC kimlik numarası",
+      password: "Şifre",
+      rePassword: "Şifre Tekrar",
+    };
+
+    const checkField = (field, fieldName) => {
+      if (!field) {
+        errors[fieldName] = `${requiredFields[fieldName]} alanı zorunludur.`;
+      }
+    };
+
+    checkField(identityNumber, "identityNumber");
+    checkField(password, "password");
+    checkField(rePassword, "rePassword");
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    const activationCode = window.location.pathname.split("/").pop();
+    if (validateUserInfo()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/auth/activation",
+          {
+            identityNumber,
+            password,
+            rePassword,
+            activationCode,
+          }
+        );
         const { message, status } = response.data;
         if (status === 1) {
           console.log(message);
@@ -129,19 +129,12 @@ const Activation = () => {
           console.error(message);
           showSnackbar(message, 0);
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        showSnackbar("Aktivasyon işlemi yapılırken bir hata oluştu.", 0);
-      });
+      } catch (error) {
+        console.error("Error occurred:", error);
+        showSnackbar("Kaydolunurken bir hata oluştu.", 0);
+      }
+    }
   };
-  useEffect(() => {
-    const activationCode = window.location.pathname.split("/").pop();
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      activationCode,
-    }));
-  }, []);
   return (
     <>
       <Snackbar
@@ -179,28 +172,31 @@ const Activation = () => {
           <TextField
             required
             sx={{ m: 1, minWidth: 350 }}
-            helperText={
-              identityError ? "TC kimlik numarası alanı zorunludur." : ""
-            }
-            error={identityError}
+            error={Boolean(formErrors.identityNumber)}
+            helperText={formErrors.identityNumber || " "}
             id="demo-helper-text-misaligned"
             label="TC Kimlik Numarası"
-            value={formData.identityNumber}
+            value={identityNumber}
             onChange={handleIdentityNumberChange}
             autoComplete="off"
+            inputProps={{
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+              maxLength: 11,
+            }}
           />
-          <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
-            <InputLabel
-              htmlFor="outlined-adornment-password"
-              style={{ color: passwordError ? "#dc143c" : "#616161" }}
-            >
-              Şifre *
-            </InputLabel>
-            <OutlinedInput
-              required
-              id="outlined-adornment-password"
-              type={showPassword ? "text" : "password"}
-              endAdornment={
+          <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.password)}
+            helperText={formErrors.password || " "}
+            id="outlined-adornment-password"
+            label="Şifre"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={handlePasswordChange}
+            InputProps={{
+              endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
@@ -211,33 +207,23 @@ const Activation = () => {
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              }
-              label="Şifre"
-              value={formData.password}
-              onChange={handlePasswordChange}
-              error={passwordError}
-              inputProps={{
-                style: { color: "gray" },
-                maxLength: 16,
-              }}
-              autoComplete="off"
-            />
-            <FormHelperText error={passwordError}>
-              {passwordError ? "Şifre alanı zorunludur." : ""}
-            </FormHelperText>
-          </FormControl>
-          <FormControl sx={{ m: 1, minWidth: 350 }} variant="outlined">
-            <InputLabel
-              htmlFor="outlined-adornment-repassword"
-              style={{ color: repasswordError ? "#dc143c" : "#616161" }}
-            >
-              Şifre Tekrar *
-            </InputLabel>
-            <OutlinedInput
-              required
-              id="outlined-adornment-repassword"
-              type={showRepassword ? "text" : "password"} // type="password" olarak değiştirildi
-              endAdornment={
+              ),
+            }}
+            autoComplete="off"
+            variant="outlined"
+          />
+           <TextField
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.rePassword)}
+            helperText={formErrors.rePassword || " "}
+            id="outlined-adornment-rePassword"
+            label="Şifre Tekrar"
+            type={showRepassword ? "text" : "password"}
+            value={rePassword}
+            onChange={handleRepasswordChange}
+            InputProps={{
+              endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
@@ -248,22 +234,11 @@ const Activation = () => {
                     {showRepassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              }
-              label="Şifre Tekrar"
-              value={formData.repassword}
-              onChange={handleRepasswordChange}
-              error={repasswordError}
-              inputProps={{
-                style: { color: "gray" },
-                maxLength: 16,
-              }}
-              autoComplete="off"
-            />
-            <FormHelperText error={repasswordError}>
-              {repasswordError ? "Şifre tekrar alanı zorunludur." : ""}
-            </FormHelperText>
-          </FormControl>
-
+              ),
+            }}
+            autoComplete="off"
+            variant="outlined"
+          />
           <Button
             variant="contained"
             sx={{ m: 1, minWidth: 350, textTransform: "none" }}
@@ -271,7 +246,6 @@ const Activation = () => {
           >
             Aktivasyon İşlemini Gerçekleştir
           </Button>
-          {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
         </Paper>
       </Box>
     </>

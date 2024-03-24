@@ -35,9 +35,6 @@ const SignUp = () => {
   const [dateOfBirth, setDateOfBirth] = useState(null);
   const [emailAddress, setEmailAddress] = useState("");
   const [formErrors, setFormErrors] = useState({});
-  const [showErrors, setShowErrors] = useState(false);
-  const [identityError, setIdentityError] = useState(false);
-
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
@@ -225,18 +222,7 @@ const SignUp = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const validateIdentityNumber = (identityNumber) => {
-    const tcRegex = /^[1-9]{1}[0-9]{9}[02468]{1}$/;
-    return tcRegex.test(identityNumber);
-  };
-
   const handleSignUp = async () => {
-    setShowErrors(true);
-    if (!validateIdentityNumber(identityNumber)) {
-      setIdentityError(true);
-    } else {
-      setIdentityError(false);
-    }
     if (validateUserInfo()) {
       try {
         const response = await axios.post(
@@ -555,7 +541,6 @@ const SignUp = () => {
               Giriş Yap
             </Link>
           </div>
-          {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
         </Paper>
       </Box>
     </>
