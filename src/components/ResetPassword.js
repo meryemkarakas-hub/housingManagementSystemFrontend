@@ -9,13 +9,15 @@ import {
   Typography,
 } from "@mui/material";
 import Button from '@mui/material/Button';
+import { useNavigate } from "react-router-dom";
+
 
 const ResetPassword = () => {
   const [identityNumber, setIdentityNumber] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
-  const [identityError, setIdentityError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [showErrors, setShowErrors] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const navigate = useNavigate();
+
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -31,51 +33,88 @@ const ResetPassword = () => {
     setSnackbarOpen(true);
   };
 
-  const validateTCNumber = (tcNumber) => {
-    const tcRegex = /^[1-9]{1}[0-9]{9}[02468]{1}$/;
-    return tcRegex.test(tcNumber);
-  };
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleResetPassword = () => {
-    setShowErrors(true);
-
-    if (!validateTCNumber(identityNumber)) {
-      setIdentityError(true);
-    } else {
-      setIdentityError(false);
-    }
-
-    if (!validateEmail(emailAddress)) {
-      setEmailError(true);
-    } else {
-      setEmailError(false);
-    }
-
-    if (validateTCNumber(identityNumber) && validateEmail(emailAddress)) {
-      axios.post("http://localhost:8080/api/auth/reset-password", {
-        identityNumber: identityNumber,
-        emailAddress: emailAddress
-      })
-      
-      .then(response => {
-        const { message, status } = response.data;
-      if (status === 1) {
-        console.log(message);
-        showSnackbar(message, 1);
+  const handleIdentityNumberChange = (event) => {
+    let inputValue = event.target.value.trim();
+    const onlyDigits = /^\d*$/;
+    if (onlyDigits.test(inputValue)) {
+      if (inputValue.length === 11) {
+        setIdentityNumber(inputValue);
+        setFormErrors({ ...formErrors, identityNumber: "" });
       } else {
-        console.error(message);
-        showSnackbar(message, 0);
+        setIdentityNumber(inputValue);
+        setFormErrors({
+          ...formErrors,
+          identityNumber: "TC Kimlik Numarası 11 haneli olmalıdır.",
+        });
       }
-        console.log(response.data); 
-      })
-      .catch(error => {
-        console.error('İstek hatası:', error); 
+    } else {
+      setFormErrors({
+        ...formErrors,
+        identityNumber: "TC Kimlik Numarası alanı sadece rakam içermelidir.",
       });
+    }
+  };
+
+  const handleEmailChange = (event) => {
+    const inputValue = event.target.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (inputValue === "" || emailRegex.test(inputValue)) {
+      setEmailAddress(inputValue);
+      setFormErrors({ ...formErrors, emailAddress: "" });
+    } else {
+      setEmailAddress(inputValue);
+      setFormErrors({
+        ...formErrors,
+        emailAddress: "Geçerli bir e-posta adresi giriniz.",
+      });
+    }
+  };
+
+  const validateUserInfo = () => {
+    const errors = {};
+
+    const requiredFields = {
+      identityNumber: "TC kimlik numarası",
+      emailAddress: "E-posta Adresi",
+    };
+
+    const checkField = (field, fieldName) => {
+      if (!field) {
+        errors[fieldName] = `${requiredFields[fieldName]} alanı zorunludur.`;
+      }
+    };
+
+    checkField(identityNumber, "identityNumber");
+    checkField(emailAddress, "emailAddress");
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleResetPassword = async () => {
+    if (validateUserInfo()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/auth/reset-password",
+          {
+            identityNumber,
+            emailAddress,
+          }
+        );
+        const { message, status } = response.data;
+        if (status === 1) {
+          console.log(message);
+          showSnackbar(message, 1);
+          setTimeout(() => {
+            navigate("/login");
+          }, 6000);
+        } else {
+          console.error(message);
+          showSnackbar(message, 0);
+        }
+      } catch (error) {
+        console.error("Error occurred:", error);
+        showSnackbar("Şifre sıfırlarken bir hata oluştu.", 0);
+      }
     }
   };
 
@@ -114,40 +153,36 @@ const ResetPassword = () => {
           Şifremi Unuttum
         </Typography>
         <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          helperText={showErrors && !identityNumber ? "TC kimlik numarası alanı zorunludur." : ""}
-          id="identityNumber"
-          label="TC Kimlik Numarası"
-          value={identityNumber}
-          error={identityError}
-          onChange={(e) => {
-            const input = e.target.value;
-            if (/^\d*$/.test(input)) {
-              setIdentityNumber(input.slice(0, 11));
-              setIdentityError(false);
-            }
-          }}
-          inputProps={{ maxLength: 11 }}
-        />
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.identityNumber)}
+            helperText={formErrors.identityNumber || " "}
+            id="demo-helper-text-misaligned"
+            label="TC Kimlik Numarası"
+            value={identityNumber}
+            onChange={handleIdentityNumberChange}
+            autoComplete="off"
+            inputProps={{
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+              maxLength: 11,
+            }}
+          />
         <TextField
-          required
-          sx={{ m: 1, minWidth: 350 }}
-          helperText={showErrors && !emailAddress ? "E-posta Adresi alanı zorunludur." : ""}
-          id="emailAddress"
-          label="E-posta Adresi"
-          value={emailAddress}
-          error={emailError}
-          onChange={(e) => {
-            const input = e.target.value;
-            if (input.length <= 40) {
-              setEmailAddress(input);
-              setEmailError(false);
-            }
-          }}
-        />
+            required
+            sx={{ m: 1, minWidth: 350 }}
+            error={Boolean(formErrors.emailAddress)}
+            helperText={formErrors.emailAddress || " "}
+            id="demo-helper-text-misaligned"
+            label="E-posta Adresi"
+            value={emailAddress}
+            onChange={handleEmailChange}
+            autoComplete="off"
+            inputProps={{
+              maxLength: 50,
+            }}
+          />
         <Button variant="contained" sx={{ m: 1, minWidth: 350, textTransform: 'none'}} onClick={handleResetPassword}>Şifre Yenile</Button>
-        {/* Kaydol Sayfasının Geri Kalanı Buraya Eklenebilir */}
       </Paper>
     </Box>
     </>
