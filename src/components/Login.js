@@ -57,11 +57,19 @@ const Login = () => {
   };
 
   const handlePasswordChange = (event) => {
-    const inputValue = event.target.value;
-    setPassword(inputValue.slice(0, 16));
-    if (inputValue.length === 1 ) {
+    let inputValue = event.target.value;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,16}$/;
+    if (inputValue.length > 16) {
+        inputValue = inputValue.slice(0, 16);
+    }
+    setPassword(inputValue);
+    if (!inputValue) {
+      setFormErrors({ ...formErrors, password: "Şifre alanı zorunludur." });
+    } else if (inputValue.length < 8 || inputValue.length > 16 || !passwordRegex.test(inputValue)) {
+      setFormErrors({ ...formErrors, password: "Şifre alanı en az 8 karakterden en fazla 16 karakterden oluşmalıdır. Büyük harf, küçük harf, özel karakter ve rakam içermelidir." });
+    } else {
       setFormErrors({ ...formErrors, password: "" });
-    } 
+    }
   };
 
   const validateUserInfo = () => {

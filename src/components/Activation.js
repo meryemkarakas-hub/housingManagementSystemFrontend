@@ -30,20 +30,39 @@ const Activation = () => {
   const handleMouseDownRepassword = (event) => {
     event.preventDefault();
   };
+  
+
   const handlePasswordChange = (event) => {
-    const inputValue = event.target.value;
-    setPassword(inputValue.slice(0, 16));
-    if (inputValue.length === 1 ) {
+    let inputValue = event.target.value;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,16}$/;
+    if (inputValue.length > 16) {
+        inputValue = inputValue.slice(0, 16);
+    }
+    setPassword(inputValue);
+    if (!inputValue) {
+      setFormErrors({ ...formErrors, password: "Şifre alanı zorunludur." });
+    } else if (inputValue.length < 8 || inputValue.length > 16 || !passwordRegex.test(inputValue)) {
+      setFormErrors({ ...formErrors, password: "Şifre alanı en az 8 karakterden en fazla 16 karakterden oluşmalıdır. Büyük harf, küçük harf, özel karakter ve rakam içermelidir." });
+    } else {
       setFormErrors({ ...formErrors, password: "" });
-    } 
+    }
   };
 
+  
   const handleRepasswordChange = (event) => {
-    const inputValue = event.target.value;
-    setRePassword(inputValue.slice(0, 16));
-    if (inputValue.length === 1 ) {
+    let inputValue = event.target.value;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,16}$/;
+    if (inputValue.length > 16) {
+        inputValue = inputValue.slice(0, 16);
+    }
+    setRePassword(inputValue);
+    if (!inputValue) {
+      setFormErrors({ ...formErrors, rePassword: "Şifre alanı zorunludur." });
+    } else if (inputValue.length < 8 || inputValue.length > 16 || !passwordRegex.test(inputValue)) {
+      setFormErrors({ ...formErrors, rePassword: "Şifre alanı en az 8 karakterden en fazla 16 karakterden oluşmalıdır. Büyük harf, küçük harf, özel karakter ve rakam içermelidir." });
+    } else {
       setFormErrors({ ...formErrors, rePassword: "" });
-    } 
+    }
   };
 
   const handleIdentityNumberChange = (event) => {
@@ -104,6 +123,8 @@ const Activation = () => {
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
+
+
 
   const handleSubmit = async () => {
     const activationCode = window.location.pathname.split("/").pop();
