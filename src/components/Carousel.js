@@ -53,7 +53,7 @@ function Carousel() {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
+    <Box sx={{ maxWidth: 600, flexGrow: 1 }}> {/* Genişliği değiştirdim */}
       <Paper
         square
         elevation={0}
@@ -79,9 +79,9 @@ function Carousel() {
               <Box
                 component="img"
                 sx={{
-                  height: 255,
+                  height: 350, 
                   display: 'block',
-                  maxWidth: 400,
+                  maxWidth: 1200, 
                   overflow: 'hidden',
                   width: '100%',
                 }}

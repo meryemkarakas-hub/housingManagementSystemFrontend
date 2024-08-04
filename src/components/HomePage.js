@@ -163,7 +163,7 @@ function HomePage() {
         <Box 
           sx={{ 
             width: '100%', 
-            height: '350px',  
+            height: '500px',  
             display: 'flex', 
             justifyContent: 'center', 
             alignItems: 'center' 
