@@ -56,7 +56,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            YÖNETİM SİSTEMLERİ
+            ZİRVE KONUT YÖNETİM SİSTEMLERİ
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

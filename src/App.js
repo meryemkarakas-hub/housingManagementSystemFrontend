@@ -9,6 +9,7 @@ import Menu from "./components/Menu";
 import DashboardMenu from "./components/DashboardMenu";
 import SelectManagement from "./components/SelectManagement";
 import AddManagement from "./components/AddManagement";
+import HomePage from "./components/HomePage";
 
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
           <Route exact path="/ayarlar" element={<Ayarlar />} />
           <Route exact path="/select-management" element={<SelectManagement />} />
           <Route exact path="/add-management" element={<AddManagement />} />
-
+          <Route exact path="/home-page" element={<HomePage />} />
         </Routes>
       </Router>
     </div>
