@@ -102,7 +102,7 @@ function Carousel() {
             onClick={handleNext}
             disabled={activeStep === maxSteps - 1}
           >
-            Next
+            Sonraki
             {theme.direction === 'rtl' ? (
               <KeyboardArrowLeft />
             ) : (
@@ -117,7 +117,7 @@ function Carousel() {
             ) : (
               <KeyboardArrowLeft />
             )}
-            Back
+            Önceki
           </Button>
         }
       />

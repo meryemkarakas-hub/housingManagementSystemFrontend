@@ -131,7 +131,7 @@ function HomePage() {
                 GİRİŞ YAP
               </Button>
               <Button variant="contained" sx={{ backgroundColor: 'orange' }}>
-                ÜYE OL
+                KAYDOL
               </Button>
               <Menu
                 sx={{ mt: "45px" }}
