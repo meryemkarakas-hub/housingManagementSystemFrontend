@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -19,6 +20,7 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 function HomePage() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -33,6 +35,14 @@ function HomePage() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLoginClick = () => {
+    navigate("/login"); // Navigate to the login page
+  };
+
+  const handleSignUpClick = () => {
+    navigate("/sign-up"); // Navigate to the sign-up page
   };
 
   return (
@@ -127,10 +137,18 @@ function HomePage() {
             </Box>
 
             <Box sx={{ flexGrow: 0, display: 'flex', gap: 2 }}>
-              <Button variant="contained" sx={{ backgroundColor: 'orange' }}>
+              <Button
+                variant="contained"
+                sx={{ backgroundColor: 'orange' }}
+                onClick={handleLoginClick} // Add click handler
+              >
                 GİRİŞ YAP
               </Button>
-              <Button variant="contained" sx={{ backgroundColor: 'orange' }}>
+              <Button 
+                variant="contained" 
+                sx={{ backgroundColor: 'orange' }}
+                onClick={handleSignUpClick} // Add click handler
+              >
                 KAYDOL
               </Button>
               <Menu
