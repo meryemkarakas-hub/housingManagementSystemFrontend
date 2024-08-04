@@ -13,6 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import ApartmentIcon from "@mui/icons-material/Apartment";
+import Carousel from "./Carousel";
 
 const pages = ["Hakkımızda", "İletişim"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -37,6 +38,7 @@ function HomePage() {
   };
 
   return (
+    <>
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -159,7 +161,10 @@ function HomePage() {
         </Toolbar>
       </Container>
     </AppBar>
-    
+    <Container>
+        <Carousel/>
+      </Container>
+    </>
   );
 }
 export default HomePage;
