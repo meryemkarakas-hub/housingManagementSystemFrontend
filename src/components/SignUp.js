@@ -16,11 +16,16 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import dayjs from "dayjs";
+import "dayjs/locale/tr";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
+dayjs.locale("tr");
+
 
 const SignUp = () => {
   const [userRole, setUserRole] = React.useState("");
@@ -38,6 +43,14 @@ const SignUp = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+  const handleDateOfBirthChange = (newDate) => {
+    if (newDate) {
+      setDateOfBirth(dayjs(newDate).format("YYYY-MM-DD"));
+    } else {
+      setDateOfBirth(null);
+    }
+  };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -410,7 +423,8 @@ const SignUp = () => {
               maxLength: 10,
             }}
           />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="tr">
             <DemoContainer
               components={["DatePicker"]}
               sx={{ m: 1, minWidth: 350 }}
@@ -424,8 +438,8 @@ const SignUp = () => {
                   </span>
                 }
                 sx={{ width: "95%" }}
-                value={dateOfBirth}
-                onChange={(newDate) => setDateOfBirth(newDate)}
+                value={dateOfBirth ? dayjs(dateOfBirth) : null}
+                onChange={handleDateOfBirthChange}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -450,7 +464,6 @@ const SignUp = () => {
               {formErrors.dateOfBirth ? "Doğum Tarihi alanı zorunludur." : " "}
             </Typography>
           </LocalizationProvider>
-
           <FormControl required sx={{ m: 1, minWidth: 350, marginTop: "25px" }}>
             <InputLabel
               id="demo-simple-select-required-label"
