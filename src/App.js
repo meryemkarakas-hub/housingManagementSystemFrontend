@@ -1,7 +1,7 @@
 import React from "react";
 import ResetPassword from "./components/ResetPassword";
 import SignUp from "./components/SignUp";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import Activation from "./components/Activation";
 import Ayarlar from "./components/Ayarlar";
@@ -25,6 +25,7 @@ function App() {
     <div>
       <Router>
         <Routes>
+        <Route path="/" element={<Navigate to="/home-page" />} /> 
           <Route path="/sign-up" element={<SignUp />} />
           <Route
             path="/auth/activation/:activationCode"
