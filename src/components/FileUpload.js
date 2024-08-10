@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Input } from '@mui/material';
-import { useState } from 'react';
+import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import * as XLSX from 'xlsx';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 export default function FileUpload() {
   const [fileName, setFileName] = useState('');
@@ -28,18 +41,21 @@ export default function FileUpload() {
 
   return (
     <div>
-      <Input
-        type="file"
-        accept=".xlsx, .xls"
-        onChange={handleFileUpload}
-        style={{ display: 'none' }}
-        id="excel-file-upload"
-      />
       <label htmlFor="excel-file-upload">
-        <Button variant="contained" component="span">
+        <Button
+          component="span"
+          variant="contained"
+          startIcon={<CloudUploadIcon />}
+        >
           Upload Excel File
         </Button>
       </label>
+      <VisuallyHiddenInput
+        id="excel-file-upload"
+        type="file"
+        accept=".xlsx, .xls"
+        onChange={handleFileUpload}
+      />
       {fileName && <p>Uploaded file: {fileName}</p>}
     </div>
   );
