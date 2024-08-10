@@ -30,12 +30,20 @@ import RuleIcon from "@mui/icons-material/Rule";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DvrIcon from "@mui/icons-material/Dvr";
+import AddHomeIcon from "@mui/icons-material/AddHome";
+import { useNavigate } from "react-router-dom";
 
 export default function NestedList() {
   const [open, setOpen] = React.useState({});
 
+  const navigate = useNavigate();
+
   const handleClick = (key) => {
-    setOpen((prevOpen) => ({ ...prevOpen, [key]: !prevOpen[key] }));
+    if (key === "addHousingInformation") {
+      navigate("/add-housing-information");
+    } else {
+      setOpen((prevOpen) => ({ ...prevOpen, [key]: !prevOpen[key] }));
+    }
   };
 
   return (
@@ -49,20 +57,23 @@ export default function NestedList() {
         </ListSubheader>
       }
     >
-      <ListItemButton onClick={() => handleClick("apartments")}>
+      <ListItemButton onClick={() => handleClick("housingManagement")}>
         <ListItemIcon>
           <ApartmentIcon />
         </ListItemIcon>
-        <ListItemText primary="Apartmanlar" />
-        {open.apartments ? <ExpandLess /> : <ExpandMore />}
+        <ListItemText primary="Konut Yönetimi" />
+        {open.housingManagement ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
-      <Collapse in={open.apartments} timeout="auto" unmountOnExit>
+      <Collapse in={open.housingManagement} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
+          <ListItemButton
+            sx={{ pl: 4 }}
+            onClick={() => handleClick("addHousingInformation")}
+          >
             <ListItemIcon>
-              <StarBorder />
+              <AddHomeIcon />
             </ListItemIcon>
-            <ListItemText primary="Starred" />
+            <ListItemText primary="Konut Bilgisi Ekle" />
           </ListItemButton>
         </List>
       </Collapse>

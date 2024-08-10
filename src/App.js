@@ -11,6 +11,7 @@ import SelectManagement from "./components/SelectManagement";
 import AddManagement from "./components/AddManagement";
 import HomePage from "./components/HomePage";
 import Carousel from "./components/Carousel";
+import AddHousingInformation from "./components/AddHousingInformation";
 
 
 function App() {
@@ -39,7 +40,7 @@ function App() {
           <Route exact path="/add-management" element={<AddManagement />} />
           <Route exact path="/home-page" element={<HomePage />} />
           <Route exact path="/carousel" element={<Carousel />} />
-
+          <Route exact path="/add-housing-information" element={<AddHousingInformation />} />
         </Routes>
       </Router>
     </div>
