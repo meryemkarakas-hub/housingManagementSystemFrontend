@@ -1,6 +1,19 @@
 .leftMenu {
-    width: 300px; /* Sol menü genişliği */
-    background-color: lightgray; /* Sol menü arka plan rengi */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Gölgelendirme */
+    width: 300px; 
+    background-color: lightgray; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+    float: left;
   }
+ 
+  .rightMenu {
+    float: right;
+    width: 75%;
+  }
+  
+  div::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
   
