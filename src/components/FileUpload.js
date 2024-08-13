@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Input } from '@mui/material';
+import { Button} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import * as XLSX from 'xlsx';
@@ -46,8 +46,9 @@ export default function FileUpload() {
           component="span"
           variant="contained"
           startIcon={<CloudUploadIcon />}
+          sx={{ m: 1, minWidth: 350, textTransform: "none" }}
         >
-          Upload Excel File
+          Konut Bilgisi Excel Dosyasını yükle
         </Button>
       </label>
       <VisuallyHiddenInput
@@ -56,7 +57,7 @@ export default function FileUpload() {
         accept=".xlsx, .xls"
         onChange={handleFileUpload}
       />
-      {fileName && <p>Uploaded file: {fileName}</p>}
+      {fileName && <p>Yüklenen Dosya: {fileName}</p>}
     </div>
   );
 }
