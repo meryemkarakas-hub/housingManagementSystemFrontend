@@ -13,9 +13,8 @@ import {
   Snackbar,
 } from "@mui/material";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosInstance";
-
 
 export default function AddHousingInformation() {
   const [formErrors, setFormErrors] = useState({});
@@ -24,6 +23,8 @@ export default function AddHousingInformation() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [file, setFile] = useState(null);
+  const navigate = useNavigate();
 
   const showSnackbar = (message, status) => {
     setSnackbarMessage(message);
@@ -61,7 +62,7 @@ export default function AddHousingInformation() {
         setBlockNameList(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching blok name data:", error);
+        console.error("Blok adı verileri alınırken hata oluştu:", error);
       });
   }, []);
 
@@ -69,13 +70,23 @@ export default function AddHousingInformation() {
     setBlokName(event.target.value);
   };
 
+  const handleFileChange = (file) => {
+    setFile(file);
+  };
+
   const handleHousingInformation = async () => {
-    if (validateBlockName()) {
       try {
-        const response = await axios.post(
-          "http://localhost:8080/api/auth/add-housing-information",
+        const formData = new FormData();
+        //formData.append("blockName", blockName);
+        formData.append("file", file);
+
+        const response = await axiosInstance.post(
+          "/housing-management/add-housing-information",
+          formData,
           {
-            blockName,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           }
         );
         const { message, status } = response.data;
@@ -83,17 +94,16 @@ export default function AddHousingInformation() {
           console.log(message);
           showSnackbar(message, 1);
           setTimeout(() => {
-            Navigate("/login");
+            navigate("/login");
           }, 6000);
         } else {
           console.error(message);
           showSnackbar(message, 0);
         }
       } catch (error) {
-        console.error("Error occurred:", error);
-        showSnackbar("Kaydolunurken bir hata oluştu.", 0);
+        console.error("Hata oluştu:", error);
+        showSnackbar("Kayıt sırasında bir hata oluştu.", 0);
       }
-    }
   };
 
   return (
@@ -147,7 +157,7 @@ export default function AddHousingInformation() {
                   <em>Lütfen işlem yapacağınız blok adını seçiniz.</em>
                 </MenuItem>
                 {blockNameList.map((blockNameItem) => (
-                  <MenuItem key={blockName.id} value={blockNameItem.id}>
+                  <MenuItem key={blockNameItem.id} value={blockNameItem.id}>
                     {blockNameItem.blockName}
                   </MenuItem>
                 ))}
@@ -161,10 +171,10 @@ export default function AddHousingInformation() {
               </FormHelperText>
             </FormControl>
           </div>
-          <FileUpload /> {/* FileUpload komponentini sağ menüye ekleyin */}
+          <FileUpload onFileChange={handleFileChange} />
           <Button
             variant="contained"
-            sx={{ m: 1, minWidth: 350, textTransform: "none",backgroundColor: "green" }}
+            sx={{ m: 1, minWidth: 350, textTransform: "none", backgroundColor: "green" }}
             onClick={handleHousingInformation}
           >
             Konut Bilgisi Ekle
