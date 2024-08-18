@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import axiosInstance from "../services/axiosInstance";
+
 
 export default function AddHousingInformation() {
   const [formErrors, setFormErrors] = useState({});
@@ -53,8 +55,8 @@ export default function AddHousingInformation() {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/auth/block-names")
+    axiosInstance
+      .get("/housing-management/block-names")
       .then((response) => {
         setBlockNameList(response.data);
       })
