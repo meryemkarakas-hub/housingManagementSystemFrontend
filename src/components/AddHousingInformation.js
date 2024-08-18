@@ -12,7 +12,6 @@ import {
   Select,
   Snackbar,
 } from "@mui/material";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosInstance";
 
@@ -66,7 +65,7 @@ export default function AddHousingInformation() {
       });
   }, []);
 
-  const handleChangeForBlokName = (event) => {
+  const handleChangeForBlokName = (event) => { 
     setBlokName(event.target.value);
   };
 
@@ -75,9 +74,10 @@ export default function AddHousingInformation() {
   };
 
   const handleHousingInformation = async () => {
+    if (validateBlockName()) {
       try {
         const formData = new FormData();
-        //formData.append("blockName", blockName);
+        formData.append("blockName", blockName);
         formData.append("file", file);
 
         const response = await axiosInstance.post(
@@ -104,6 +104,7 @@ export default function AddHousingInformation() {
         console.error("Hata oluştu:", error);
         showSnackbar("Kayıt sırasında bir hata oluştu.", 0);
       }
+    }
   };
 
   return (
