@@ -23,7 +23,6 @@ export default function AddHousingInformation() {
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [file, setFile] = useState(null);
-  const navigate = useNavigate();
 
   const showSnackbar = (message, status) => {
     setSnackbarMessage(message);
@@ -93,9 +92,6 @@ export default function AddHousingInformation() {
         if (status === 1) {
           console.log(message);
           showSnackbar(message, 1);
-          setTimeout(() => {
-            navigate("/login");
-          }, 6000);
         } else {
           console.error(message);
           showSnackbar(message, 0);
