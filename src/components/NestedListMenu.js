@@ -31,6 +31,7 @@ import CalculateIcon from "@mui/icons-material/Calculate";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DvrIcon from "@mui/icons-material/Dvr";
 import AddHomeIcon from "@mui/icons-material/AddHome";
+import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from "react-router-dom";
 
 export default function NestedList() {
@@ -41,7 +42,10 @@ export default function NestedList() {
   const handleClick = (key) => {
     if (key === "addHousingInformation") {
       navigate("/add-housing-information");
-    } else {
+    }if (key === "viewEditHousingInformation") {
+      navigate("/view-edit-housing-information");
+    }
+     else {
       setOpen((prevOpen) => ({ ...prevOpen, [key]: !prevOpen[key] }));
     }
   };
@@ -74,6 +78,15 @@ export default function NestedList() {
               <AddHomeIcon />
             </ListItemIcon>
             <ListItemText primary="Konut Bilgisi Ekle" />
+          </ListItemButton>
+          <ListItemButton
+            sx={{ pl: 4 }}
+            onClick={() => handleClick("viewEditHousingInformation")}
+          >
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Konut Bilgisi Görüntüle/Düzenle" />
           </ListItemButton>
         </List>
       </Collapse>

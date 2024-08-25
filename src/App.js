@@ -6,12 +6,12 @@ import Login from "./components/Login";
 import Activation from "./components/Activation";
 import Ayarlar from "./components/Ayarlar";
 import Menu from "./components/Menu";
-import DashboardMenu from "./components/DashboardMenu";
 import SelectManagement from "./components/SelectManagement";
 import AddManagement from "./components/AddManagement";
 import HomePage from "./components/HomePage";
 import Carousel from "./components/Carousel";
 import AddHousingInformation from "./components/AddHousingInformation";
+import ViewEditHousingInformation from "./components/ViewEditHousingInformation";
 
 
 function App() {
@@ -41,6 +41,7 @@ function App() {
           <Route exact path="/home-page" element={<HomePage />} />
           <Route exact path="/carousel" element={<Carousel />} />
           <Route exact path="/add-housing-information" element={<AddHousingInformation />} />
+          <Route exact path="/view-edit-housing-information" element={<ViewEditHousingInformation />} />
         </Routes>
       </Router>
     </div>
